@@ -18,11 +18,32 @@ object TutorialCommand : ChallengerCommand("tutorial", "Detaillierte Beschreibun
     init {
         onlyUserChat()
 
+
+        // TODO Add /timeset command (?)
+        tutorial += "Du willst eine neue Bewegung hinzufügen? Mit /addmovement kannst du zunächst über die Schaltflächen die Sportart auswählen. " +
+                "Danach fragt dich der Bot ganz automatisch nach der Strecke oder den absolvierten Minuten. " +
+                "Wenn du eine Aktivität aus der Vergangenheit nachtragen möchtest, kannst du diese darauffolgend mit /XXX zurückdatieren."
+
+        tutorial += "Du willst einen Überblick über die Challenge bekommen? Mit /challenge kannst du deinen Fortschritt einsehen. " +
+                "Dieser Befehl zeigt dir deinen Gesamtfortschritt an, deine Aktivitäten für den aktuellen Monat, deinen Gesamtfortschritt aufgeteilt nach Sportarten und deine letzten fünf Aktivitäten!\n" +
+                "Du willst wissen wie weit alle Teilnehmer in der Challenge sind? Mit /competitor siehst du den Gesamtfortschritt aller im Vergleich. " +
+                "Mit /leaderboard fragt dich der Bot mithilfe von Schaltflächen nach einer Sportart und lässt dich dann den Fortschritt aller Teilnehmer in einer Sportart im Vergleich sehen!"
+
+        tutorial += "Du willst einen neuen Trainingsplan hinzufügen oder absolvierst eine Strecke regelmäßig? " +
+                "Mit /newplan fragt dich der Bot mithilfe von Schaltflächen nach der Sportart und Strecke bzw. Zeit und lässt dich für das Training einen Namen vergeben. " +
+                "Wenn du das Training absolvierst kannst du einfach mit /addtraining die Schaltfläche des Trainingsplans auswählen und die Aktivität wird automatisch eingetragen."
+
+        tutorial += "Du suchst nach einem zusätzlichen Anstoß für deine Motivation? Kein Problem mit /newreminder kannst du auswählen in welchen Intervallen dich der Bot an Bewegung erinnern soll. " +
+                "Wähle einfach deine gewünschte Schaltfläche aus und lass dich überraschen!"
+
+        tutorial += "Du suchst nach einem Befehl und hast ihn bisher noch nicht gefunden? Kein Problem mit /help werden dir alle verfügbaren befehle des Bots angezeigt!\n" +
+                "Zum Ausführen von Befehlen kannst du ganz einfach das / in das Nachrichtenfeld eintippen und aus dem Befehlsmenü deinen gewünschten Befehl aussuchen oder direkt komplett eintippen und absenden. " +
+                "Mithilfe der / Schaltfläche neben dem Nachrichtenfeld lässt sich das Befehlsmenü auch direkt öffnen und der gewünschte Befehl durch antippen kinderleicht auswählen."
+
+
         parameters += object : Parameter("Seite", "Gebe die Seite des Tutorials ein. (Seite 1-${tutorial.size})", optional = true) {
             override fun isValueAllowed(value: String) = value.matches(Regex("^[0-9]*$")) && value.toInt() > 0 && value.toInt() <= tutorial.size
         }
-
-        tutorial += "Test *Test* \n _Test_ /test `Test`"
     }
 
     override fun handle(sender: AbsSender, user: User, chat: Chat, challenger: Challenger, params: List<String>) {
@@ -30,7 +51,7 @@ object TutorialCommand : ChallengerCommand("tutorial", "Detaillierte Beschreibun
         val page = (params.firstOrNull()?.toInt()?:1)
 
         val message = "($page/${tutorial.size})      *Tutorial*\n\n${tutorial[page-1]}"
-        sendMessage(chat, message, inlineKeyboardFromPair(listOf("Zurück" to "$command ${page - 1}", "Weiter" to "$command ${page + 1}").filterIndexed {idx, _ -> (page == 1 && idx != 0) || (page == tutorial.size && idx != 1) } ))
+        sendMessage(chat, message, inlineKeyboardFromPair(listOf("Zurück" to "$command ${page - 1}", "Weiter" to "$command ${page + 1}").filterIndexed {idx, _ -> (idx == 0 && page != 1) || (idx == 1 && page != tutorial.size) } ))
             .also { MessageHandler.addDeleteableMessage(it, MessageType.TUTORIAL) }
     }
 }
