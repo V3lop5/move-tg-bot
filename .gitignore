@@ -1,0 +1,18 @@
+/.gradle
+/.idea
+/out
+/build
+/target
+*.iml
+*.ipr
+*.iws
+
+# Information about the Bot (Token + Name)
+/bot_token
+/bot_name
+
+# data
+/challengers.json
+/challengers.json.backup
+chart_*
+500.png
