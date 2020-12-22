@@ -3,6 +3,7 @@ package de.fhaachen.matse.movebot.telegram.model
 enum class MessageType {
     COMMAND_PROCESS,
     COMMAND_COMPLETE,
+    TUTORIAL,
     REQUEST_MESSAGE,
     REQUESTED_VALUE,
     CONFIRM_REQUEST,

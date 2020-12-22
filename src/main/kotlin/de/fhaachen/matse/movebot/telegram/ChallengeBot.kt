@@ -33,6 +33,7 @@ object ChallengeBot : TelegramLongPollingCommandBot(botName) {
         register(NicknameCommand)
         register(StartCommand)
         register(ShutdownCommand)
+        register(TutorialCommand)
 
         registerDefaultAction { _, message ->
             sendMessage(message.chatId, "Der Befehl *${message.text.split("\\s+")[0]}* existiert nicht.\nAlle Befehle: /${HelpCommand.command}")

@@ -21,11 +21,9 @@ object StartCommand : Command("start", "Für die erstmalige Benutzung des *${bot
         }
 
         ChallengerManager.addChallenger(user)
-        sendComplete(chat, "Dein Ziel: *im Jahr 2020 2020km bewegen*\n\nDer *$botName* hilft dir, dein Ziel im Auge zu behalten. Er speichert für dich die zurückgelegten Kilometer.",
+        sendComplete(chat, "*MOVE! - Deine Challenge*\n\nErreiche dieses Jahr 2021 Punkte!\n\nDer *$botName* hilft dir, dein Ziel im Auge zu behalten. Er speichert für dich die zurückgelegten Kilometer oder die Aktivitätsdauer.",
                 inlineKeyboardFromPair(
                         Pair("Bewegung erfassen", AddMovementCommand.command),
-                        Pair("Trainingsplan hinzufügen", NewPlanCommand.command),
-                        Pair("Erinnerung hinzufügen", NewReminderCommand.command),
-                        Pair("Hilfe für Befehle", HelpCommand.command)))
+                        Pair("Tutorial", TutorialCommand.command)))
     }
 }

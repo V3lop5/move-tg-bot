@@ -9,9 +9,9 @@ import org.telegram.telegrambots.meta.bots.AbsSender
 
 object NicknameCommand : ChallengerCommand("nickname", "Ändere deinen Anzeigenamen.") {
     init {
-        parameters.add(object : Parameter("Name", "Gebe einen Namen ein unter dem du den anderen Challengern angezeigt werden möchtest.\nDer Name darf nur aus Buchstaben und Zahlen bestehen.", singleWord = false) {
+        parameters += object : Parameter("Name", "Gebe einen Namen ein unter dem du den anderen Challengern angezeigt werden möchtest.\nDer Name darf nur aus Buchstaben und Zahlen bestehen.", singleWord = false) {
             override fun isValueAllowed(value: String) = value.matches(Regex("^[a-zA-Z0-9 ]*$"))
-        })
+        }
 
     }
 
