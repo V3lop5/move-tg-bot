@@ -25,8 +25,7 @@ var lastDataChange = LocalDateTime.now()!!
 fun main() {
     ConsoleEventListener.register()
     DataChangeEventListener.register()
-    Challenge2020Complete.register()
-    KilometerXComplete.register()
+    MovePointsComplete.register()
 
     ApiContextInitializer.init()
 
@@ -44,10 +43,8 @@ fun main() {
 
     fixedRateTimer(period = 50000) {
         ReminderManager.checkRemindersFromChallengers()
-        GoalManager.checkGoals()
+        // TODO Erst später aktivieren WeeklyStatManager.checkGoals()
     }
-
-   // ChallengerManager.challengers.filter { StatisticsManager.getDistance(it) >= 6060 }.forEach { KilometerXComplete.complete(it, 6060) }
 }
 
 fun save(force: Boolean = false) {

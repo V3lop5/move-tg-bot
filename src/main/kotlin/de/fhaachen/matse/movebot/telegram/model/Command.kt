@@ -67,7 +67,7 @@ abstract class Command(val command: String,
     private fun checkRequirements(user: User, chat: Chat, params: Array<out String>): Boolean {
         requirements.forEach {
             if (!it.check(user, chat, params)) {
-                sendMessage(chat, "Du erfüllst nicht alle Vorraussetzungen für diese Funktion!\n${it.message}")
+                sendMessage(chat, "Es sind nicht alle Vorraussetzungen für diese Funktion erfüllt:\n*${it.message}*")
                 return false
             }
         }

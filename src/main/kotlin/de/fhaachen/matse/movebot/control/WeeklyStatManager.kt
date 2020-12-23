@@ -1,5 +1,6 @@
 package de.fhaachen.matse.movebot.control
 
+import de.fhaachen.matse.movebot.POINT_GOAL
 import de.fhaachen.matse.movebot.round
 import de.fhaachen.matse.movebot.telegram.ChallengeBot
 import de.fhaachen.matse.movebot.telegram.MessageHandler
@@ -13,7 +14,7 @@ import java.time.LocalDateTime
 import java.time.temporal.TemporalAdjusters
 
 // Für Wochenziele, oder Gesamtziele
-object GoalManager {
+object WeeklyStatManager {
 
     private var nextWeekReminder = LocalDateTime.now().withHour(12).withMinute(0).with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))!!
     private var nextWeekResult: LocalDateTime = LocalDateTime.now().withHour(18).withMinute(0).with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))!!
@@ -40,9 +41,9 @@ object GoalManager {
         ChallengerManager.challengers.forEach { challenger ->
             val message = if (stat.containsChallenger(challenger)) {
                 val place = stat.statEntries.indexOfFirst { it.challenger == challenger } + 1
-                val distance = stat.statEntries.first { it.challenger == challenger }.value()
-                "Du hast diese Woche *$distance Kilometer* erreicht!\nDamit bist du auf *Platz $place* (für diese Woche)."
-            } else "Du hast in der letzten Woche keine Bewegungen Aktivitäten!\nAchtung: Du wirst nicht in der wöchentlichen Statistik um 18:00 auftauchen!\nWillst du das wirklich?"
+                val points = stat.statEntries.first { it.challenger == challenger }.value()
+                "Du hast diese Woche *$points Punkte* erreicht!\nDamit bist du auf *Platz $place* (für diese Woche)."
+            } else "Du hast in der letzten Woche keine Bewegungen erfasst!\nAchtung: Du wirst nicht in der wöchentlichen Statistik um 18:00 auftauchen!\nWillst du das wirklich?"
 
             try {
                 ChallengeBot.sendMessage(challenger.telegramUser.id, message, keyboard).also { MessageHandler.addDeleteableMessage(it, MessageType.WEEKLY_REMINDER) }
@@ -57,11 +58,11 @@ object GoalManager {
         val stat = StatisticsManager.getLastWeekStatistic()
         stat.sortByValue(false)
         val chart = ChartsManager.getChartPicture(stat)
-        val totalDistance = stat.statEntries.sumByDouble { it.value() }.round(0)
+        val totalPoints = stat.statEntries.sumByDouble { it.value() }.round(0)
 
         val messageOverview = "*Ergebnis der Woche*\n" +
-                "Wir haben gemeinsam *$totalDistance Kilometer* erreicht.\n" +
-                (if (totalDistance > 2020) "Es ist vollbracht! 2020km in nur einer Woche! Ich bin stolz auf euch!" else "Schaffen wir die 2020?") + "\n" +
+                "Wir haben gemeinsam *$totalPoints Punkte* erarbeitet.\n" +
+                (if (totalPoints > POINT_GOAL) "\uD83C\uDF89\uD83C\uDF89 *über $POINT_GOAL Punkte in einer Woche!* \uD83C\uDF89\uD83C\uDF89" else "Schaffen wir die $POINT_GOAL nächste Woche?") + "\n" +
                 stat.statEntries.foldIndexed("") { index, old, entry -> "$old\n${index + 1}. *${entry.label}* (${entry.value()} km)" }
 
         ChallengerManager.challengers.forEach { challenger ->

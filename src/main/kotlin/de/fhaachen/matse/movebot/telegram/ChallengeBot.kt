@@ -1,19 +1,25 @@
 package de.fhaachen.matse.movebot.telegram
 
 import de.fhaachen.matse.movebot.botName
+import de.fhaachen.matse.movebot.control.ChallengerManager
 import de.fhaachen.matse.movebot.control.LiveLocationManager
 import de.fhaachen.matse.movebot.telegram.ChallengeBot.registerDefaultAction
 import de.fhaachen.matse.movebot.telegram.commands.*
 import de.fhaachen.matse.movebot.telegram.model.Command
 import de.fhaachen.matse.movebot.telegram.model.MessageCleanupCause
+import de.fhaachen.matse.movebot.telegram.model.MessageType
+import de.fhaachen.matse.movebot.telegram.model.inlineKeyboardFromPair
 import org.telegram.telegrambots.extensions.bots.commandbot.TelegramLongPollingCommandBot
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery
+import org.telegram.telegrambots.meta.api.methods.GetFile
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText
 import org.telegram.telegrambots.meta.api.objects.Message
 import org.telegram.telegrambots.meta.api.objects.Update
+import org.telegram.telegrambots.meta.api.objects.User
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard
+import java.io.File
 
 object ChallengeBot : TelegramLongPollingCommandBot(botName) {
 
@@ -27,13 +33,16 @@ object ChallengeBot : TelegramLongPollingCommandBot(botName) {
         register(ChallengeCommand)
         register(DiagramCommand)
         register(FeedbackCommand)
+        register(GoalCommand)
         register(HelpCommand)
+        register(LeaderboardCommand)
         register(NewPlanCommand)
         register(NewReminderCommand)
         register(NicknameCommand)
         register(StartCommand)
         register(ShutdownCommand)
         register(TutorialCommand)
+        register(WhoisCommand)
 
         registerDefaultAction { _, message ->
             sendMessage(message.chatId, "Der Befehl *${message.text.split("\\s+")[0]}* existiert nicht.\nAlle Befehle: /${HelpCommand.command}")
@@ -41,6 +50,7 @@ object ChallengeBot : TelegramLongPollingCommandBot(botName) {
 
     }
 
+    val lastVideoIds = mutableMapOf<User, String>()
 
     override fun processNonCommandUpdate(update: Update) {
         if (update.hasMessage()) {
@@ -52,11 +62,25 @@ object ChallengeBot : TelegramLongPollingCommandBot(botName) {
                 }
             } else if (update.message.hasLocation())
                 LiveLocationManager.onLocationMessage(update.message)
+            else if (update.message.hasVideo()) {
+                lastVideoIds[update.message.from] = update.message.video.fileId
+                MessageHandler.cleanupMessages(update.message.chatId, MessageCleanupCause.COMMAND_CANCELED)
+                sendMessage(update.message.chatId, "Möchtest du dieses Video als dein Vorstellungsvideo verwenden?",
+                    inlineKeyboardFromPair("Ja" to "#myvideo", "Nein" to CancelCommand.command))
+                    .also { MessageHandler.addDeleteableMessage(it, MessageType.COMMAND_PROCESS) }
+                downloadFile(execute(GetFile().setFileId(update.message.video.fileId))).copyTo(File("videos/${update.message.video.fileId}.mp4"))
+            }
             else
                 println("[processNonCommandUpdate Other] ${update.message.from.getName()} (${update.message.from.id}) message='${update.message}'")
         } else if (update.hasEditedMessage()) {
             if (update.editedMessage.hasLocation()) {
                 LiveLocationManager.onLiveLocationUpdate(update.editedMessage)
+            } else if (update.editedMessage.hasText()) {
+                println("[processNonCommandUpdate EditedText] ${update.editedMessage.from.getName()} (${update.editedMessage.from.id}) text='${update.editedMessage.text}'")
+                sendMessage(
+                    update.editedMessage.chatId,
+                    "Hast du gerade eine Nachricht editiert? Ich hab nicht aufgepasst.\nBitte gebe deine Nachricht erneut ein. Editierung unterstütze ich momentan nicht."
+                )
             }
         } else if (update.hasCallbackQuery()) {
             var dataSplit = update.callbackQuery.data.split(Regex("\\s+"))
@@ -71,6 +95,32 @@ object ChallengeBot : TelegramLongPollingCommandBot(botName) {
                 dataSplit = dataSplit.drop(1)
                 MessageHandler.cleanupMessages(update.callbackQuery.from.id.toLong(), MessageCleanupCause.REMINDER_CLICKED)
                 if (dataSplit.isEmpty()) return // Abbrechen wurde gedrückt
+            }
+
+            if (dataSplit[0].startsWith("#myvideo")) {
+                MessageHandler.cleanupMessages(update.callbackQuery.from.id.toLong(), MessageCleanupCause.COMMAND_COMPLETE)
+                val videoId = lastVideoIds[update.callbackQuery.from]
+                if (videoId == null) {
+                    sendMessage(update.callbackQuery.from.id.toLong(), "VideoId nicht gefunden.")
+                    return
+                }
+                ChallengerManager.findChallenger(update.callbackQuery.from)?.run {
+                    presentationVideoId = videoId
+                    shareVideoAndGoals = false
+                    sendMessage(update.callbackQuery.from.id.toLong(), "Dein Vorstellungsvideo wurde aktualisiert. Dürfen das Video andere Challenge-Teilnehmer sehen?",
+                    inlineKeyboardFromPair("Ja" to "#allowSharing", "Nein" to CancelCommand.command))
+                }
+                return
+            }
+
+            if (dataSplit[0].startsWith("#allowSharing")) {
+                MessageHandler.cleanupMessages(update.callbackQuery.from.id.toLong(), MessageCleanupCause.COMMAND_COMPLETE)
+                ChallengerManager.findChallenger(update.callbackQuery.from)?.run {
+                    shareVideoAndGoals = true
+                    sendMessage(update.callbackQuery.from.id.toLong(), "Freigabe-Einstellungen gespeichert. ${if (shareVideoAndGoals) "Andere dürfen dein Video und deine Ziele einsehen." else "Niemand (außer der Bot&Paul) darf dein Video und deine Ziele einsehen."}",
+                    inlineKeyboardFromPair("Vorstellungen ansehen" to WhoisCommand.command))
+                }
+                return
             }
 
             if (dataSplit[0].startsWith("#"))

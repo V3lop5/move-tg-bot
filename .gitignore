@@ -12,6 +12,7 @@
 /bot_name
 
 # data
+/videos
 /challengers.json
 /challengers.json.backup
 chart_*

@@ -7,10 +7,7 @@ import de.fhaachen.matse.movebot.prettyDateString
 import de.fhaachen.matse.movebot.prettyString
 import de.fhaachen.matse.movebot.round
 import de.fhaachen.matse.movebot.telegram.ConfirmHandler
-import de.fhaachen.matse.movebot.telegram.model.ChallengerCommand
-import de.fhaachen.matse.movebot.telegram.model.Parameter
-import de.fhaachen.matse.movebot.telegram.model.distanceParameter
-import de.fhaachen.matse.movebot.telegram.model.movementTypeParameter
+import de.fhaachen.matse.movebot.telegram.model.*
 import org.telegram.telegrambots.meta.api.objects.Chat
 import org.telegram.telegrambots.meta.api.objects.User
 import org.telegram.telegrambots.meta.bots.AbsSender
@@ -23,16 +20,19 @@ object AddMovementCommand : ChallengerCommand("addmovement", "Du hast dich beweg
     private val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy", Locale.GERMAN)
 
     init {
-        parameters.add(movementTypeParameter)
-        parameters.add(distanceParameter)
+        requirements += inYearRequirement
 
+        parameters.add(movementTypeParameter)
+        parameters.add(movementValueParameter)
+
+        // TODO Datum optional
         parameters.add(object : Parameter("Datum", "Gebe das Datum ein. (heute, gestern, vorgestern, vor x Tagen oder dd.MM.yyyy)") {
             override fun isValueAllowed(value: String) = parseDate(value) != null && parseDate(value)?.isBefore(LocalDateTime.now().plusMinutes(1)) ?: false
         })
     }
 
     override fun handle(sender: AbsSender, user: User, chat: Chat, challenger: Challenger, params: List<String>) {
-        val movementType = MovementType.valueOf(params[0])
+        val movementType = MovementType.of(params[0])
         val distance = params[1].toDouble().round(2)
         val datetime = parseDate(params[2]) ?: LocalDateTime.now()
 
@@ -40,7 +40,7 @@ object AddMovementCommand : ChallengerCommand("addmovement", "Du hast dich beweg
 
         if (challenger.hasSameMovementAtThisDay(movement)) {
             if (!ConfirmHandler.hasPendingConfirmation(chat)) {
-                ConfirmHandler.requestConfirmation(chat, "Du hast zu dem Datum ${movement.datetime.prettyDateString()} bereits die Strecke (${movement.type} / *${movement.distance} km* erfasst." +
+                ConfirmHandler.requestConfirmation(chat, "Du hast zu dem Datum ${movement.datetime.prettyDateString()} bereits die Strecke (${movement.type} / *${movement.value} km* erfasst." +
                         "\nHast du diese Strecke an dem Tag doppelt zurückgelegt?") { handle(sender, user, chat, challenger, params) }
                 return
             }

@@ -1,5 +1,25 @@
 package de.fhaachen.matse.movebot.model
 
-enum class MovementType {
-    BIKING, RUNNING, WALKING, SWIMMING;
+import de.fhaachen.matse.movebot.toBigActivity
+import de.fhaachen.matse.movebot.toFinish
+
+enum class MovementType(val title: String, val emoji: String, val unit: String, val pointsPerUnit: Double) {
+
+    BIKING("Radfahren", "\uD83D\uDEB4\u200D♂️", "km", toBigActivity(20.0) ),
+    RUNNING("Laufen", "\uD83C\uDFC3\u200D♂️", "km",  toBigActivity(13.0) ),
+    WALKING("Spazieren", "\uD83D\uDEB6\u200D♂️", "km", toBigActivity(12.0) ),
+    HIKING("Wandern", "⛰", "km", toBigActivity(9.0) ),
+    SWIMMING("Schwimmen", "\uD83C\uDFCA\u200D♂️", "km", toBigActivity(2.0) ),
+    FITNESS ("Fitness", "\uD83C\uDFCB️\u200D♂️", "min", toBigActivity(60.0) ),
+    PUSHUPS ("Liegestütze", "\uD83D\uDE47\uD83C\uDFFC\u200D♂️", "Wdh.", toFinish(15000)),
+    PULLUPS ("Klimmzüge", "\uD83D\uDCAA", "Wdh.", toFinish(7300)),
+    SQUATS ("Kniebeuge", "\uD83E\uDDBF", "Wdh.", toFinish(100000));
+
+    companion object {
+        fun of(input: String) = values().single { it.name.equals(input, true) || it.title.equals(input, true) || it.emoji == input }
+    }
+
+    val pointMultiplier: Double
+        get() = 15.0 / pointsPerUnit
 }
+

@@ -11,13 +11,23 @@ import java.time.temporal.ChronoUnit
 
 object StatisticsManager {
 
-    fun getDistance(challenger: Challenger, movementType: MovementType? = null): Double {
-        val distance = (if (movementType != null)
+    fun getPoints(challenger: Challenger, movementType: MovementType? = null): Double {
+        val points = (if (movementType != null)
             challenger.movements.filter { it.type == movementType }
         else challenger.movements)
-                .map { it.distance }.sum()
+                .map { it.points }.sum()
 
-        return distance.round(2)
+        return points.round(2)
+    }
+
+
+    fun getSum(challenger: Challenger, movementType: MovementType? = null): Double {
+        val points = (if (movementType != null)
+            challenger.movements.filter { it.type == movementType }
+        else challenger.movements)
+            .map { it.value }.sum()
+
+        return points.round(2)
     }
 
     fun getCompetitorStatistic(timeInterval: TimeInterval = TimeInterval.WEEKLY) = StatisticBuilder()
@@ -39,7 +49,7 @@ object StatisticsManager {
 
     fun getMovementSplittedByType(challenger: Challenger) = StatisticBuilder().addChallenger(challenger).splitByMovementType().build("${challenger.nickname}'s Aktivitäten")
 
-    fun getCurrentMonthDistance(challenger: Challenger) = challenger.movements.filter { it.datetime.month == LocalDate.now().month }.sumByDouble { it.distance }.round(2)
+    fun getCurrentMonthPoints(challenger: Challenger) = challenger.movements.filter { it.datetime.month == LocalDate.now().month }.sumByDouble { it.points }.round(2)
 
     fun getMonthlyStatistic(): Statistic = StatisticBuilder()
             .addChallenger(ChallengerManager.challengers)

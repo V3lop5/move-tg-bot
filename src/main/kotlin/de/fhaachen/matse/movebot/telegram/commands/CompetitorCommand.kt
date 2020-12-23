@@ -14,9 +14,9 @@ object CompetitorCommand : ChallengerCommand("competitor", "Hier gibt es die Sta
 
     override fun handle(sender: AbsSender, user: User, chat: Chat, challenger: Challenger, params: List<String>) {
         val results = ChallengerManager.challengers
-                .map { Pair(StatisticsManager.getDistance(it), it.nickname) }
+                .map { Pair(StatisticsManager.getPoints(it), it.nickname) }
                 .sortedByDescending { it.first }
-                .mapIndexed { index, it -> "`${(index + 1).padStart(2)}. ${it.first.round(1).padStart(6)} km` ${it.second}" }
+                .mapIndexed { index, it -> "`${(index + 1).padStart(2)}. ${it.first.round(1).padStart(6)} Pkt.` ${it.second}" }
         sendComplete(chat, results.fold("Übersicht aller Teilnehmer:\n") { a, b -> "$a\n$b" })
     }
 

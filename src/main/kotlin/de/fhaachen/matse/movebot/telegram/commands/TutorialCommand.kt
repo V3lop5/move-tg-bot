@@ -18,6 +18,7 @@ object TutorialCommand : ChallengerCommand("tutorial", "Detaillierte Beschreibun
     init {
         onlyUserChat()
 
+        // TODO Videovorstellung
 
         // TODO Add /timeset command (?)
         tutorial += "Du willst eine neue Bewegung hinzufügen? Mit /addmovement kannst du zunächst über die Schaltflächen die Sportart auswählen. " +
@@ -40,6 +41,8 @@ object TutorialCommand : ChallengerCommand("tutorial", "Detaillierte Beschreibun
                 "Zum Ausführen von Befehlen kannst du ganz einfach das / in das Nachrichtenfeld eintippen und aus dem Befehlsmenü deinen gewünschten Befehl aussuchen oder direkt komplett eintippen und absenden. " +
                 "Mithilfe der / Schaltfläche neben dem Nachrichtenfeld lässt sich das Befehlsmenü auch direkt öffnen und der gewünschte Befehl durch antippen kinderleicht auswählen."
 
+        tutorial += "*Wochenstatistik*\nJeden Sonntag wird geschaut, wer in den vergangen Tagen die meisten Punkte erzielt hat. Wer die meisten Punkte hat, gewinnt die Woche für sich!\n\n" +
+                "Damit du in der Statistik auftauchst, musst du innerhalb der letzten Woche eine Aktivität erfassen.\n/${AddMovementCommand.command}\n/${AddTrainingCommand.command}"
 
         parameters += object : Parameter("Seite", "Gebe die Seite des Tutorials ein. (Seite 1-${tutorial.size})", optional = true) {
             override fun isValueAllowed(value: String) = value.matches(Regex("^[0-9]*$")) && value.toInt() > 0 && value.toInt() <= tutorial.size

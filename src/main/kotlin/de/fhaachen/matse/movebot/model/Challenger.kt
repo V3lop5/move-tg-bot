@@ -1,20 +1,26 @@
 package de.fhaachen.matse.movebot.model
 
+import de.fhaachen.matse.movebot.handler.ChallengerHandler
 import de.fhaachen.matse.movebot.handler.MovementHandler
 import de.fhaachen.matse.movebot.handler.PlanHandler
 import de.fhaachen.matse.movebot.handler.ReminderHandler
 import de.fhaachen.matse.movebot.telegram.getName
 import org.telegram.telegrambots.meta.api.objects.User
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 data class Challenger(val telegramUser: User) {
 
     private val permissions = mutableListOf<ChallengerPermission>()
     var customNickname: String? = null
-
+    val joinTimestamp = LocalDateTime.now()
+    var presentationVideoId: String? = null
+    var shareVideoAndGoals: Boolean = false
 
     val movements = mutableListOf<Movement>()
     val reminders = mutableListOf<Reminder>()
     val plans = mutableListOf<Plan>()
+    val goals = mutableMapOf<MovementType, Int>()
 
     val nickname: String
         get() = if (customNickname != null) customNickname!! else telegramUser.getName() ?: "(ID: ${telegramUser.id})"
@@ -26,7 +32,7 @@ data class Challenger(val telegramUser: User) {
     }
 
     fun hasSameMovementAtThisDay(movement: Movement): Boolean {
-        return movements.any { it.datetime.dayOfYear == movement.datetime.dayOfYear && it.type == movement.type && it.distance == movement.distance }
+        return movements.any { it.datetime.dayOfYear == movement.datetime.dayOfYear && it.type == movement.type && it.value == movement.value }
     }
 
 
@@ -49,5 +55,16 @@ data class Challenger(val telegramUser: User) {
         reminders += reminder
         ReminderHandler.onReminderAdd(this, reminder)
     }
+
+    fun setGoal(movementType: MovementType, goal: Int) {
+        goals[movementType] = goal
+        ChallengerHandler.onGoalSet(this, movementType, goal)
+    }
+
+    fun canChangeGoal(movementType: MovementType): Boolean {
+        val modifyUntil = maxOf(LocalDate.ofYearDay(2021, 3).atStartOfDay(), joinTimestamp.plusDays(2))
+        return LocalDateTime.now().isBefore(modifyUntil) || !goals.containsKey(movementType)
+    }
+
 
 }

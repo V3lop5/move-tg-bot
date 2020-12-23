@@ -114,14 +114,14 @@ class StatisticBuilder {
             // Jetzt die einzelnen Movements zu StatEntries wandeln
             statData.forEach { data ->
                 if (groupByTime == null) {
-                    entries.add(PointStatEntry(data.key, challenger, data.value.sumByDouble { it.distance }.round(2)))
+                    entries.add(PointStatEntry(data.key, challenger, data.value.sumByDouble { it.points }.round(2)))
                 } else {
                     val intervalData = data.value.groupBy { groupByTime!!.groupBy(it) }
                     val xData = IntRange(intervalData.minBy { it.key }?.key ?: 0, intervalData.maxBy { it.key }?.key
                             ?: 0)
                     val yData = xData.map { x ->
-                        if (cumulateData) intervalData.filterKeys { it <= x }.values.sumByDouble { movement -> movement.sumByDouble { it.distance } }
-                        else intervalData[x]?.sumByDouble { it.distance } ?: 0.0
+                        if (cumulateData) intervalData.filterKeys { it <= x }.values.sumByDouble { movement -> movement.sumByDouble { it.points } }
+                        else intervalData[x]?.sumByDouble { it.points } ?: 0.0
                     }.map { it.round(2) }
                     entries.add(SeriesStatEntry(data.key, challenger, xData.map { it.toDouble() }.toMutableList(), yData.toMutableList(), cumulateData))
                 }

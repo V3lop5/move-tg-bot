@@ -1,5 +1,8 @@
 package de.fhaachen.matse.movebot
 
+import com.google.gson.*
+import com.google.gson.annotations.JsonAdapter
+import java.lang.reflect.Type
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -30,3 +33,14 @@ fun Number.length() = when (this) {
 fun Number.padByMaxValue(max: Int) = padStart(max.length())
 
 fun Number.padStart(length: Int) = this.toString().padStart(length)
+
+
+object LocalDateTimeAdapter : JsonSerializer<LocalDateTime>, JsonDeserializer<LocalDateTime> {
+    override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): LocalDateTime {
+        return LocalDateTime.parse(json.asString, dateTimeFormatter)
+    }
+
+    override fun serialize(src: LocalDateTime, typeOfSrc: Type, context: JsonSerializationContext): JsonElement {
+        return JsonPrimitive(src.format(dateTimeFormatter))
+    }
+}

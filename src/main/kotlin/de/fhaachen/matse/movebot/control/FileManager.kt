@@ -3,13 +3,16 @@ package de.fhaachen.matse.movebot.control
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
+import de.fhaachen.matse.movebot.LocalDateTimeAdapter
 import de.fhaachen.matse.movebot.model.Challenger
 import java.io.File
 import java.io.FileReader
 import java.io.FileWriter
+import java.time.LocalDateTime
 
 val gson: Gson = GsonBuilder().setPrettyPrinting().disableHtmlEscaping()
-        .create()
+    .registerTypeHierarchyAdapter(LocalDateTime::class.java, LocalDateTimeAdapter)
+    .create()
 
 val challengerFile = File("challengers.json")
 

@@ -2,6 +2,7 @@ package de.fhaachen.matse.movebot.telegram.commands
 
 import de.fhaachen.matse.movebot.botName
 import de.fhaachen.matse.movebot.control.ChallengerManager
+import de.fhaachen.matse.movebot.model.MovementType
 import de.fhaachen.matse.movebot.telegram.model.Command
 import de.fhaachen.matse.movebot.telegram.model.inlineKeyboardFromPair
 import org.telegram.telegrambots.meta.api.objects.Chat
@@ -21,9 +22,17 @@ object StartCommand : Command("start", "Für die erstmalige Benutzung des *${bot
         }
 
         ChallengerManager.addChallenger(user)
-        sendComplete(chat, "*MOVE! - Deine Challenge*\n\nErreiche dieses Jahr 2021 Punkte!\n\nDer *$botName* hilft dir, dein Ziel im Auge zu behalten. Er speichert für dich die zurückgelegten Kilometer oder die Aktivitätsdauer.",
-                inlineKeyboardFromPair(
-                        Pair("Bewegung erfassen", AddMovementCommand.command),
-                        Pair("Tutorial", TutorialCommand.command)))
+        sendComplete(
+            chat,
+            "*MOVE! - Deine Challenge*\n\nAuch in diesem Jahr gibt es eine Challenge: Erreiche 2021 Punkte im Jahr 2021!\n\n" +
+                    "Der *$botName* hilft dir, dein Ziel im Auge zu behalten. Er speichert für dich die zurückgelegten Kilometer oder die Aktivitätsdauer.\n\n" +
+                    "Übrigens: Lade ein Video hoch, damit du dich den anderen Teilnehmern vorstellen kannst & dir auch die Videos der anderen ansehen kannst.\n\n" +
+                    MovementType.values().joinToString(separator = " ") { it.emoji },
+            inlineKeyboardFromPair(
+                Pair("Tutorial ansehen", TutorialCommand.command),
+                Pair("Jahresziel erfassen", GoalCommand.command),
+                Pair("Bewegung erfassen", AddMovementCommand.command), maxColumns = 1
+            )
+        )
     }
 }

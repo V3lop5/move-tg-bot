@@ -5,6 +5,7 @@ import de.fhaachen.matse.movebot.prettyDateString
 import de.fhaachen.matse.movebot.telegram.ConfirmHandler
 import de.fhaachen.matse.movebot.telegram.model.ChallengerCommand
 import de.fhaachen.matse.movebot.telegram.model.Parameter
+import de.fhaachen.matse.movebot.telegram.model.allowPersonalShareRequirement
 import de.fhaachen.matse.movebot.telegram.model.inlineKeyboardFromPair
 import org.telegram.telegrambots.meta.api.objects.Chat
 import org.telegram.telegrambots.meta.api.objects.User
@@ -12,6 +13,8 @@ import org.telegram.telegrambots.meta.bots.AbsSender
 
 object AddTrainingCommand : ChallengerCommand("addtraining", "Training ist wieder geschafft. Jetzt nur noch schnell die Kilometer festhalten. Hiermit kannst du es ganz bequem per Plan machen.") {
     init {
+        requirements += allowPersonalShareRequirement
+
         parameters.add(Parameter("Name des Plans", "Welchen Plan möchtest du hinzufügen?", optional = true))
     }
 
@@ -37,7 +40,7 @@ object AddTrainingCommand : ChallengerCommand("addtraining", "Training ist wiede
 
         if (challenger.hasSameMovementAtThisDay(movement)) {
             if (!ConfirmHandler.hasPendingConfirmation(chat)) {
-                ConfirmHandler.requestConfirmation(chat, "Du hast zu dem Datum ${movement.datetime.prettyDateString()} bereits die Strecke (${movement.type} / *${movement.distance} km* erfasst." +
+                ConfirmHandler.requestConfirmation(chat, "Du hast zu dem Datum ${movement.datetime.prettyDateString()} bereits die Strecke (${movement.type} / *${movement.value} km* erfasst." +
                         "\nHast du diese Strecke an dem Tag doppelt zurückgelegt?") { handle(sender, user, chat, challenger, params) }
                 return
             }
@@ -50,6 +53,6 @@ object AddTrainingCommand : ChallengerCommand("addtraining", "Training ist wiede
 
         challenger.addMovement(movement)
 
-        sendComplete(chat, "Die Strecke wurde anhand des Plans *${plan.keyword}* hinzugefügt.\n${movement.type} // *${movement.distance} km* // ${plan.description}")
+        sendComplete(chat, "Die Strecke wurde anhand des Plans *${plan.keyword}* hinzugefügt.\n${movement.type} // *${movement.value} km* // ${plan.description}")
     }
 }
