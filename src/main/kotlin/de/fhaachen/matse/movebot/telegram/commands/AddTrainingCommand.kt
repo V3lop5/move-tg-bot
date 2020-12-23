@@ -2,6 +2,7 @@ package de.fhaachen.matse.movebot.telegram.commands
 
 import de.fhaachen.matse.movebot.model.Challenger
 import de.fhaachen.matse.movebot.prettyDateString
+import de.fhaachen.matse.movebot.round
 import de.fhaachen.matse.movebot.telegram.ConfirmHandler
 import de.fhaachen.matse.movebot.telegram.model.ChallengerCommand
 import de.fhaachen.matse.movebot.telegram.model.Parameter
@@ -15,7 +16,7 @@ object AddTrainingCommand : ChallengerCommand("addtraining", "Training ist wiede
     init {
         requirements += allowPersonalShareRequirement
 
-        parameters.add(Parameter("Name des Plans", "Welchen Plan möchtest du hinzufügen?", optional = true))
+        parameters.add(Parameter("Name des Plans", "Welches Training hast du gemacht?", optional = true))
     }
 
     override fun handle(sender: AbsSender, user: User, chat: Chat, challenger: Challenger, params: List<String>) {
@@ -25,14 +26,14 @@ object AddTrainingCommand : ChallengerCommand("addtraining", "Training ist wiede
         }
 
         if (params.isEmpty()) {
-            sendMessage(chat, "Wähle einen deiner Pläne aus!", inlineKeyboardFromPair(challenger.plans.map { Pair(it.keyword, "$command ${it.keyword}") }))
+            sendMessage(chat, "Wähle einen deiner Trainingspläne aus!", inlineKeyboardFromPair(challenger.plans.map { Pair(it.keyword, "$command ${it.keyword}") }))
             return
         }
 
         val plan = challenger.plans.find { it.keyword.equals(params[0], ignoreCase = true) }
 
         if (plan == null) {
-            sendMessage(chat, "Der Plan ${params[0]} existiert nicht. Bitte wähle einen anderen Plan!", inlineKeyboardFromPair(challenger.plans.map { Pair(it.keyword, "$command ${it.keyword}") }))
+            sendMessage(chat, "Der Trainingsplan ${params[0]} existiert nicht. Bitte wähle einen anderen Trainingsplan!", inlineKeyboardFromPair(challenger.plans.map { Pair(it.keyword, "$command ${it.keyword}") }))
             return
         }
 
@@ -40,8 +41,8 @@ object AddTrainingCommand : ChallengerCommand("addtraining", "Training ist wiede
 
         if (challenger.hasSameMovementAtThisDay(movement)) {
             if (!ConfirmHandler.hasPendingConfirmation(chat)) {
-                ConfirmHandler.requestConfirmation(chat, "Du hast zu dem Datum ${movement.datetime.prettyDateString()} bereits die Strecke (${movement.type} / *${movement.value} km* erfasst." +
-                        "\nHast du diese Strecke an dem Tag doppelt zurückgelegt?") { handle(sender, user, chat, challenger, params) }
+                ConfirmHandler.requestConfirmation(chat, "Du hast zu dem Datum ${movement.datetime.prettyDateString()} bereits die Aktivität ${movement.type} mit *${movement.value} ${movement.type.unit}\$* erfasst.\n" +
+                        "Hast du diese Aktivität an dem Tag zweimal gemacht?") { handle(sender, user, chat, challenger, params) }
                 return
             }
 
@@ -53,6 +54,7 @@ object AddTrainingCommand : ChallengerCommand("addtraining", "Training ist wiede
 
         challenger.addMovement(movement)
 
-        sendComplete(chat, "Die Strecke wurde anhand des Plans *${plan.keyword}* hinzugefügt.\n${movement.type} // *${movement.value} km* // ${plan.description}")
+        sendComplete(chat, "Training ${plan.keyword} erfasst!\n${movement.type.emoji} *${movement.value} ${movement.type.unit} ${movement.type.title}*\n" +
+                "Dafür gibt's ${movement.points.round(2)} Punkte! /${ChallengeCommand.command}")
     }
 }

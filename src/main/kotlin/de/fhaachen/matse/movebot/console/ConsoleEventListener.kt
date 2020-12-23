@@ -5,10 +5,7 @@ import de.fhaachen.matse.movebot.handler.MovementHandler
 import de.fhaachen.matse.movebot.handler.PlanHandler
 import de.fhaachen.matse.movebot.handler.ReminderHandler
 import de.fhaachen.matse.movebot.handler.events.*
-import de.fhaachen.matse.movebot.model.Challenger
-import de.fhaachen.matse.movebot.model.Movement
-import de.fhaachen.matse.movebot.model.Plan
-import de.fhaachen.matse.movebot.model.Reminder
+import de.fhaachen.matse.movebot.model.*
 import de.fhaachen.matse.movebot.prettyString
 import java.time.LocalTime
 
@@ -24,6 +21,11 @@ object ConsoleEventListener {
             }
         }
 
+        ChallengerHandler.goalSetListener += object : GoalSet {
+            override fun onGoalSet(challenger: Challenger, movementType: MovementType, goal: Int) {
+                println("[onGoalSet] Challenger ${challenger.nickname} (${challenger.telegramUser.id}) hat sein Ziel für Sportart ${movementType.name} auf $goal ${movementType.unit} gesetzt.")
+            }
+        }
 
         MovementHandler.movementAddListener += object : MovementAdd {
             override fun onMovementAdd(challenger: Challenger, movement: Movement) =

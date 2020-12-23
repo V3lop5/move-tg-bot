@@ -25,8 +25,7 @@ object AddMovementCommand : ChallengerCommand("addmovement", "Du hast dich beweg
         parameters.add(movementTypeParameter)
         parameters.add(movementValueParameter)
 
-        // TODO Datum optional
-        parameters.add(object : Parameter("Datum", "Gebe das Datum ein. (heute, gestern, vorgestern, vor x Tagen oder dd.MM.yyyy)") {
+        parameters.add(object : Parameter("Datum", "Gebe das Datum ein. (heute, gestern, vorgestern, vor x Tagen oder dd.MM.yyyy)", optional = true) {
             override fun isValueAllowed(value: String) = parseDate(value) != null && parseDate(value)?.isBefore(LocalDateTime.now().plusMinutes(1)) ?: false
         })
     }
@@ -34,36 +33,36 @@ object AddMovementCommand : ChallengerCommand("addmovement", "Du hast dich beweg
     override fun handle(sender: AbsSender, user: User, chat: Chat, challenger: Challenger, params: List<String>) {
         val movementType = MovementType.of(params[0])
         val distance = params[1].toDouble().round(2)
-        val datetime = parseDate(params[2]) ?: LocalDateTime.now()
+        val datetime = params.getOrNull(2)?.let(this::parseDate) ?: LocalDateTime.now()
 
         val movement = Movement(datetime, movementType, distance)
 
         if (challenger.hasSameMovementAtThisDay(movement)) {
             if (!ConfirmHandler.hasPendingConfirmation(chat)) {
-                ConfirmHandler.requestConfirmation(chat, "Du hast zu dem Datum ${movement.datetime.prettyDateString()} bereits die Strecke (${movement.type} / *${movement.value} km* erfasst." +
-                        "\nHast du diese Strecke an dem Tag doppelt zurückgelegt?") { handle(sender, user, chat, challenger, params) }
+                ConfirmHandler.requestConfirmation(chat, "Du hast zu dem Datum ${movement.datetime.prettyDateString()} bereits die Aktivität ${movement.type} mit *${movement.value} ${movement.type.unit}* erfasst." +
+                        "\nHast du diese Aktivität an dem Tag zweimal gemacht?") { handle(sender, user, chat, challenger, params) }
                 return
             }
 
             if (!ConfirmHandler.hasConfirmed(chat.id)) {
-                sendComplete(chat, "Die Strecke wurde nicht hinzugefügt, da diese bereits gespeichert ist.")
+                sendComplete(chat, "Die Aktivität wurde nicht hinzugefügt, da diese bereits gespeichert ist.")
                 return
             }
         } else if (datetime.isBefore(LocalDateTime.now().minusDays(7))) {
             if (!ConfirmHandler.hasPendingConfirmation(chat)) {
-                ConfirmHandler.requestConfirmation(chat, "Du erfasst gerade eine Bewegung zum ${datetime.prettyDateString()}. Das Datum liegt schon über eine Woche zurück. Bist du dir sicher?") { handle(sender, user, chat, challenger, params) }
+                ConfirmHandler.requestConfirmation(chat, "Du erfasst gerade eine Aktivität zum ${datetime.prettyDateString()}. Das Datum liegt schon über eine Woche zurück. Bist du dir sicher?") { handle(sender, user, chat, challenger, params) }
                 return
             }
 
             if (!ConfirmHandler.hasConfirmed(chat.id)) {
-                sendComplete(chat, "Die Strecke wurde nicht hinzugefügt, da diese in der Vergangenheit liegt..")
+                sendComplete(chat, "Die Aktivität wurde nicht hinzugefügt, da diese in der Vergangenheit liegt..")
                 return
             }
         }
 
 
         challenger.addMovement(movement)
-        sendComplete(chat, "Die Strecke wurde hinzugefügt!\nTyp: *$movementType*\nStrecke: *$distance Kilometer*\nDatum: ${datetime.prettyString()}\nDeine Übersicht: /${ChallengeCommand.command}")
+        sendComplete(chat, "${movement.type.emoji} *${movement.value} ${movement.type.unit} ${movement.type.title}* erfasst!\nDafür gibt's ${movement.points.round(2)} Punkte!\nPrüfe deinen Fortschritt: /${ChallengeCommand.command}")
 
     }
 

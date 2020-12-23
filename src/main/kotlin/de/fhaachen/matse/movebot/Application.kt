@@ -26,6 +26,7 @@ fun main() {
     ConsoleEventListener.register()
     DataChangeEventListener.register()
     MovePointsComplete.register()
+    GoalComplete.register()
 
     ApiContextInitializer.init()
 

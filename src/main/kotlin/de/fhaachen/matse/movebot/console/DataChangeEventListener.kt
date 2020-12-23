@@ -6,10 +6,7 @@ import de.fhaachen.matse.movebot.handler.PlanHandler
 import de.fhaachen.matse.movebot.handler.ReminderHandler
 import de.fhaachen.matse.movebot.handler.events.*
 import de.fhaachen.matse.movebot.lastDataChange
-import de.fhaachen.matse.movebot.model.Challenger
-import de.fhaachen.matse.movebot.model.Movement
-import de.fhaachen.matse.movebot.model.Plan
-import de.fhaachen.matse.movebot.model.Reminder
+import de.fhaachen.matse.movebot.model.*
 import java.time.LocalDateTime
 
 object DataChangeEventListener {
@@ -24,6 +21,11 @@ object DataChangeEventListener {
             }
         }
 
+        ChallengerHandler.goalSetListener += object : GoalSet {
+            override fun onGoalSet(challenger: Challenger, movementType: MovementType, goal: Int) {
+                lastDataChange = LocalDateTime.now()
+            }
+        }
 
         MovementHandler.movementAddListener += object : MovementAdd {
             override fun onMovementAdd(challenger: Challenger, movement: Movement) {
@@ -31,20 +33,17 @@ object DataChangeEventListener {
             }
         }
 
-
         PlanHandler.planAddListener += object : PlanAdd {
             override fun onPlanAdd(challenger: Challenger, plan: Plan) {
                 lastDataChange = LocalDateTime.now()
             }
         }
 
-
         ReminderHandler.reminderAddListener += object : ReminderAdd {
             override fun onReminderAdd(challenger: Challenger, reminder: Reminder) {
                 lastDataChange = LocalDateTime.now()
             }
         }
-
 
         ReminderHandler.reminderSendListener += object : ReminderSend {
             override fun onReminderSend(challenger: Challenger, reminder: Reminder) {

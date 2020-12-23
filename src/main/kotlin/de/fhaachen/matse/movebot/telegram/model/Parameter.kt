@@ -14,10 +14,11 @@ open class Parameter(
         val singleWord: Boolean = true
 ) {
 
+
     open fun isValueAllowed(value: String) = true
 
     open fun request(chat: Chat, command: Command, parsedValues: List<String>, unparsedValues: List<String>, wrongInput: String? = null) {
-        RequestHandler.requestMessage(chat, sendHelpMessage(chat.id, wrongInput)) { sender: AbsSender, message ->
+        RequestHandler.requestMessage(chat, sendHelpMessage(chat.id, parsedValues, wrongInput)) { sender: AbsSender, message ->
             if (!message.hasText()) {
                 ChallengeBot.sendMessage(chat.id, "Bitte schicke eine Textnachricht!")
                 request(chat, command, parsedValues, unparsedValues, wrongInput)
@@ -29,8 +30,12 @@ open class Parameter(
         }
     }
 
-    private fun sendHelpMessage(chatId: Long, wrongInput: String?): Message {
-        return ChallengeBot.sendMessage(chatId, "${if (wrongInput != null) "Die Eingabe *$wrongInput* ist ungültig.\n" else ""}$helpText")
+    open fun getHelptext(parsedValues: List<String>): String {
+        return helpText
+    }
+
+    private fun sendHelpMessage(chatId: Long, parsedValues: List<String>, wrongInput: String?): Message {
+        return ChallengeBot.sendMessage(chatId, "${if (wrongInput != null) "Die Eingabe *$wrongInput* ist ungültig.\n" else ""}${getHelptext(parsedValues)}")
     }
 }
 

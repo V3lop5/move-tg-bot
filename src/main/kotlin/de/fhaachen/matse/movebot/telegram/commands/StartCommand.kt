@@ -17,16 +17,16 @@ object StartCommand : Command("start", "Für die erstmalige Benutzung des *${bot
 
     override fun handle(sender: AbsSender, user: User, chat: Chat, params: List<String>) {
         if (user.languageCode != null && user.languageCode != "de") {
-            sendMessage(chat, "This bot is only available in germany. Sorry!")
+            sendMessage(chat, "This bot is only available in germany. Sorry! Your languageCode is ${user.languageCode}")
             return
         }
 
         ChallengerManager.addChallenger(user)
         sendComplete(
             chat,
-            "*MOVE! - Deine Challenge*\n\nAuch in diesem Jahr gibt es eine Challenge: Erreiche 2021 Punkte im Jahr 2021!\n\n" +
-                    "Der *$botName* hilft dir, dein Ziel im Auge zu behalten. Er speichert für dich die zurückgelegten Kilometer oder die Aktivitätsdauer.\n\n" +
-                    "Übrigens: Lade ein Video hoch, damit du dich den anderen Teilnehmern vorstellen kannst & dir auch die Videos der anderen ansehen kannst.\n\n" +
+            "*Pulse on Fire - Die Challenge*\n\nDiese Challenge wird dich 2021 auf Trab halten. Du hast ein Ziel: *2021 Punkte*\n\n" +
+                    "Erfasse deine sportlichen Aktivitäten bei diesem Bot und beweise dir selbst, dass du sportlich bist! Du kannst zahlreiche Sportarten eintragen und um eine gute Platzierung in der Wochenstatistik kämpfen.\n\n" +
+                    "Nimm dir 5 Minuten Zeit und schau dir das Tutorial an. Danach weißt du, wie du z.B. persönliche Ziele festlegst oder die anderen Teilnehmer der Challenge kennen lernen kannst.\nViel Erfolg!\n\n" +
                     MovementType.values().joinToString(separator = " ") { it.emoji },
             inlineKeyboardFromPair(
                 Pair("Tutorial ansehen", TutorialCommand.command),

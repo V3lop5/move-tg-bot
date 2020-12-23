@@ -22,7 +22,7 @@ object WhoisCommand : ChallengerCommand("whois", "Videos und Ziele anderer Teiln
         onlyUserChat()
         requirements += allowPersonalShareRequirement
 
-        parameters += Parameter("Teilnehmer", "Von welchem Teilnehmer möchtest du die Ziele und das Präsentationsvideo einsehen?\nGebe den Namen ein", singleWord = false)
+        parameters += Parameter("Teilnehmer", "Von welchem Teilnehmer möchtest du die Ziele und das Präsentationsvideo einsehen?\nGebe den Namen des Teilnehmers ein.", singleWord = false)
     }
 
     override fun handle(sender: AbsSender, user: User, chat: Chat, challenger: Challenger, params: List<String>) {

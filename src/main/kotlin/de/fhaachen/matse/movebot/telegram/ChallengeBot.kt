@@ -47,10 +47,9 @@ object ChallengeBot : TelegramLongPollingCommandBot(botName) {
         registerDefaultAction { _, message ->
             sendMessage(message.chatId, "Der Befehl *${message.text.split("\\s+")[0]}* existiert nicht.\nAlle Befehle: /${HelpCommand.command}")
         }
-
     }
 
-    val lastVideoIds = mutableMapOf<User, String>()
+    private val lastVideoIds = mutableMapOf<User, String>()
 
     override fun processNonCommandUpdate(update: Update) {
         if (update.hasMessage()) {

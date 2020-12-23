@@ -16,11 +16,6 @@ enum class MessageCleanupCause {
             return false
         }
     },
-    TUTORIAL_COMMAND {
-        override fun isCleaning(messageType: MessageType): Boolean {
-            return messageType == MessageType.TUTORIAL
-        }
-    },
     CONFIRM_COMPLETE {
         override fun isCleaning(messageType: MessageType): Boolean {
             return messageType == MessageType.CONFIRM_REQUEST
