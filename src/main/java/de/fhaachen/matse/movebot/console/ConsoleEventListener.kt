@@ -27,6 +27,12 @@ object ConsoleEventListener {
             }
         }
 
+        ChallengerHandler.videoAddListener += object : VideoAdd {
+            override fun onVideoAdd(challenger: Challenger) {
+                println("[onGoalSet] Challenger ${challenger.nickname} (${challenger.telegramUser.id}) hat ein Video hinzugefügt.")
+            }
+        }
+
         MovementHandler.movementAddListener += object : MovementAdd {
             override fun onMovementAdd(challenger: Challenger, movement: Movement) =
                     println("[onMovementAdd] Bewegung für ${challenger.nickname} hinzugefügt: $movement")

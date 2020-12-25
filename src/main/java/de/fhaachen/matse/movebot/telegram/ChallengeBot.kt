@@ -3,6 +3,7 @@ package de.fhaachen.matse.movebot.telegram
 import de.fhaachen.matse.movebot.botName
 import de.fhaachen.matse.movebot.control.ChallengerManager
 import de.fhaachen.matse.movebot.control.LiveLocationManager
+import de.fhaachen.matse.movebot.handler.ChallengerHandler
 import de.fhaachen.matse.movebot.telegram.ChallengeBot.registerDefaultAction
 import de.fhaachen.matse.movebot.telegram.commands.*
 import de.fhaachen.matse.movebot.telegram.model.Command
@@ -116,8 +117,16 @@ object ChallengeBot : TelegramLongPollingCommandBot(botName) {
                 MessageHandler.cleanupMessages(update.callbackQuery.from.id.toLong(), MessageCleanupCause.COMMAND_COMPLETE)
                 ChallengerManager.findChallenger(update.callbackQuery.from)?.run {
                     shareVideoAndGoals = true
-                    sendMessage(update.callbackQuery.from.id.toLong(), "Freigabe-Einstellungen gespeichert. ${if (shareVideoAndGoals) "Andere dürfen dein Video und deine Ziele einsehen." else "Niemand (außer der Bot&Paul) darf dein Video und deine Ziele einsehen."}",
+                    sendMessage(update.callbackQuery.from.id.toLong(), "Freigabe-Einstellungen gespeichert. ${if (shareVideoAndGoals) "Andere dürfen dein Video und deine Ziele einsehen." else "Niemand darf dein Video und deine Ziele einsehen."}",
                     inlineKeyboardFromPair("Vorstellungen ansehen" to WhoisCommand.command))
+                    ChallengerHandler.onVideoAdd(this)
+
+                    if (shareVideoAndGoals){
+                        ChallengerManager.challengers.forEach {
+                            sendMessage(it.telegramUser.id, "$nickname hat ein Vorstellungsvideo hochgeladen.\n${if (!it.shareVideoAndGoals) "Damit du dir das Video ansehen kannst, musst du selbst ein Video aufnehmen und freigeben." else ""}",
+                            inlineKeyboardFromPair("Jetzt ansehen" to WhoisCommand.command + " " + nickname))
+                        }
+                    }
                 }
                 return
             }

@@ -27,6 +27,12 @@ object DataChangeEventListener {
             }
         }
 
+        ChallengerHandler.videoAddListener += object : VideoAdd {
+            override fun onVideoAdd(challenger: Challenger) {
+                lastDataChange = LocalDateTime.now()
+            }
+        }
+
         MovementHandler.movementAddListener += object : MovementAdd {
             override fun onMovementAdd(challenger: Challenger, movement: Movement) {
                 lastDataChange = LocalDateTime.now()

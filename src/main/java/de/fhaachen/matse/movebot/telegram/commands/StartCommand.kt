@@ -16,7 +16,7 @@ object StartCommand : Command("start", "Für die erstmalige Benutzung des *${bot
     }
 
     override fun handle(sender: AbsSender, user: User, chat: Chat, params: List<String>) {
-        if (user.languageCode != null && user.languageCode != "de") {
+        if (user.languageCode != null && user.languageCode != "de" && user.languageCode != "en") {
             sendMessage(chat, "This bot is only available in germany. Sorry! Your languageCode is ${user.languageCode}")
             return
         }
