@@ -28,7 +28,7 @@ val goalParameter = object : Parameter("Ziel", "Gebe das Ziel für die Sporart e
     val unitExamples = mapOf("km" to "`2000` für 2000 Kilometer", "min" to "`600` für 10 Stunden", "Wdh." to "`6666` für 6666")
 
     override fun isValueAllowed(value: String) =
-        value.toDoubleOrNull() != null && value.toDouble() < 2000 && value.toDouble() > 0
+        value.toDoubleOrNull() != null && value.toDouble() > 0
 
     override fun getHelptext(parsedValues: List<String>): String {
         val movementType = parsedValues.lastOrNull()?.let { MovementType.of(it) }
