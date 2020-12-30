@@ -90,6 +90,11 @@ object ChallengeBot : TelegramLongPollingCommandBot(botName) {
                 dataSplit = listOf(AddMovementCommand.command, "<REQUEST>", distance.toString(), "heute")
             }
 
+            if (dataSplit.first() == "#kbreq") {
+                KeyboardRequestHandler.onAnswer(update.callbackQuery.from.id.toLong(), dataSplit.component2().toInt(), dataSplit.component3().toInt())
+                return
+            }
+
             // TODO Nicht schön gelöst
             if (dataSplit[0].startsWith("#reminder")) {
                 dataSplit = dataSplit.drop(1)
@@ -158,6 +163,7 @@ object ChallengeBot : TelegramLongPollingCommandBot(botName) {
     fun shutdownBot() {
         MessageHandler.cleanupAllMessages()
         ConfirmHandler.removeAllConfirmationRequests()
+        KeyboardRequestHandler.cleanupAllRequests()
     }
 
     fun sendEditText(message: Message, text: String, keyboard: InlineKeyboardMarkup? = null) {

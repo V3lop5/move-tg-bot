@@ -43,7 +43,7 @@ enum class MessageCleanupCause {
     },
     SHUTDOWN {
         override fun isCleaning(messageType: MessageType): Boolean {
-            return COMMAND_CANCELED.isCleaning(messageType) || CONFIRM_CANCELED.isCleaning(messageType) || REMINDER_CLICKED.isCleaning(messageType) || WEEKLY_STAT.isCleaning(messageType)
+            return true
         }
     },
     LIVE_LOCATION_START {

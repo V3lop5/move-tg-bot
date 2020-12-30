@@ -9,5 +9,6 @@ enum class MessageType {
     REMINDER,
     WEEKLY_REMINDER,
     LOCATION_RECIVED,
-    LIVE_LOCATION
+    LIVE_LOCATION,
+    REQUEST_KEYBOARD
 }

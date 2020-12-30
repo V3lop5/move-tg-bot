@@ -16,17 +16,21 @@ object MessageHandler {
 
     fun cleanupMessages(chatId: Long, cleanupCause: MessageCleanupCause) {
         deleteableMessages.filter { it.chatId == chatId && it.isCleanedBy(cleanupCause) }.forEach {
-            try {
-                ChallengeBot.execute(DeleteMessage(it.chatId, it.messageId))
-            } catch (e: Exception) {
-                System.err.println("Löschen der Nachricht ${it.messageId} in ${it.chatId} nicht möglich... Überspringe...")
-            }
+            deleteMessage(it.chatId, it.messageId)
             deleteableMessages.remove(it)
         }
     }
 
     fun cleanupAllMessages() {
         deleteableMessages.groupBy { it.chatId }.keys.forEach { cleanupMessages(it, MessageCleanupCause.SHUTDOWN) }
+    }
+
+    fun deleteMessage(chatId: Long, messageId: Int) {
+        try {
+            ChallengeBot.execute(DeleteMessage(chatId, messageId))
+        } catch (e: Exception) {
+            System.err.println("Löschen der Nachricht ${messageId} in ${chatId} nicht möglich... Überspringe...")
+        }
     }
 
     fun isDeleteableMessage(message: Message) = deleteableMessages.any { it.chatId == message.chatId && it.messageId == message.messageId }
