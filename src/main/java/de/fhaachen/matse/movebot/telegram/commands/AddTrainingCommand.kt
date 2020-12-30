@@ -4,24 +4,22 @@ import de.fhaachen.matse.movebot.model.Challenger
 import de.fhaachen.matse.movebot.prettyDateString
 import de.fhaachen.matse.movebot.round
 import de.fhaachen.matse.movebot.telegram.ConfirmHandler
-import de.fhaachen.matse.movebot.telegram.model.ChallengerCommand
-import de.fhaachen.matse.movebot.telegram.model.Parameter
-import de.fhaachen.matse.movebot.telegram.model.allowPersonalShareRequirement
-import de.fhaachen.matse.movebot.telegram.model.inlineKeyboardFromPair
+import de.fhaachen.matse.movebot.telegram.model.*
 import org.telegram.telegrambots.meta.api.objects.Chat
 import org.telegram.telegrambots.meta.api.objects.User
 import org.telegram.telegrambots.meta.bots.AbsSender
 
 object AddTrainingCommand : ChallengerCommand("addtraining", "Training ist wieder geschafft. Jetzt nur noch schnell die Kilometer festhalten. Hiermit kannst du es ganz bequem per Plan machen.") {
     init {
-        requirements += allowPersonalShareRequirement
+        requirements += inYearRequirement
 
         parameters.add(Parameter("Name des Plans", "Welches Training hast du gemacht?", optional = true))
     }
 
     override fun handle(sender: AbsSender, user: User, chat: Chat, challenger: Challenger, params: List<String>) {
         if (challenger.plans.isEmpty()) {
-            sendMessage(chat, "Du hast noch keinen Plan angelegt. Ein Plan dient dazu, um wiederkehrende Aktivitäten schnell zu erfassen.\nNutze /${NewPlanCommand.command}")
+            sendMessage(chat, "Du hast noch keinen Plan angelegt. Ein Plan dient dazu, um wiederkehrende Aktivitäten schnell zu erfassen.\n" +
+                    "Um einen Plan anzulegen nutze den Befehl /${NewPlanCommand.command}")
             return
         }
 
