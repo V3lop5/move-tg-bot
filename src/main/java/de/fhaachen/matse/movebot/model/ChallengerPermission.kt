@@ -9,6 +9,11 @@ enum class ChallengerPermission {
     ADMIN {
         override fun parentPermission() = MASTER
     },
+
+    MODERATOR {
+        override fun parentPermission() = ADMIN
+    },
+
     CHALLENGER {
         override fun parentPermission() = ADMIN
     };

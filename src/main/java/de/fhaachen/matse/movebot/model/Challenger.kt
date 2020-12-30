@@ -16,6 +16,7 @@ data class Challenger(val telegramUser: User) {
     val joinTimestamp = LocalDateTime.now()
     var presentationVideoId: String? = null
     var shareVideoAndGoals: Boolean = false
+    var isVideoAccepted: Boolean = false
 
     val movements = mutableListOf<Movement>()
     val reminders = mutableListOf<Reminder>()
