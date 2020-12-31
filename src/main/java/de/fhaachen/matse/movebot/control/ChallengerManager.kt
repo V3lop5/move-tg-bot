@@ -37,7 +37,9 @@ object ChallengerManager {
     fun findChallenger(name: String) = challengers.firstOrNull {
         name.equals(it.customNickname, true) ||
                 name.equals(it.telegramUser.userName, true) ||
-                name.equals(it.telegramUser.getName(), true)
+                name.equals(it.telegramUser.getName(), true) ||
+                name.equals(it.nickname.replace(" ", ""), true) ||
+                name == it.telegramUser.id.toString()
     }
 
     fun save() {
