@@ -37,7 +37,7 @@ object TutorialCommand : ChallengerCommand("tutorial", "Detaillierte Beschreibun
                 "Falls du deine persönlichen Ziele mit den anderen Teilnehmern der Challenge teilen möchtest, lade doch ein kurzes Vorstellungsvideo hoch.\n» Mehr auf der nächsten Seite."
 
         tutorial += "*Vorstellungsvideo*\n\nDies ist freiwillig!\nWenn du die anderen Challenge-Teilnehmer kennen lernen möchtest, lade doch ein kurzes Vorstellungsvideo von dir hoch. Sende mir (dem Bot) ein kurzes Video und bestätige, dass die anderen Teilnehmer das Video sehen dürfen.\n\n" +
-                "Anschließend kannst du mit dem Befehl /${WhoisCommand.command} die persönlichen Ziele und das Vorstellungsvideo von anderen Teilnehmern ansehen. Es wurden bereits über ${ChallengerManager.challengers.count { it.shareVideoAndGoals }} Teilnehmern Videos hochgeladen."
+                "Anschließend kannst du mit dem Befehl /${WhoisCommand.command} die persönlichen Ziele und das Vorstellungsvideo von anderen Teilnehmern ansehen. Es wurden bereits von über ${ChallengerManager.challengers.count { it.shareVideoAndGoals }} Teilnehmern Videos hochgeladen."
 
         tutorial += "*Aktivitäten erfassen*\n\nMithilfe des Befehls /${AddMovementCommand.command} kannst du deine sportlichen Aktivitäten erfassen." +
                 "Nach Aufruf des Befehls kannst du über die Schaltflächen die Sportart auswählen und anschließend die Distanz, Dauer oder Anzahl der Wiederholungen eingeben. Fertig!\n\n" +
