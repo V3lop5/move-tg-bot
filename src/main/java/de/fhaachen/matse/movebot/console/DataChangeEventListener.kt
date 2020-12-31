@@ -1,9 +1,6 @@
 package de.fhaachen.matse.movebot.console
 
-import de.fhaachen.matse.movebot.handler.ChallengerHandler
-import de.fhaachen.matse.movebot.handler.MovementHandler
-import de.fhaachen.matse.movebot.handler.PlanHandler
-import de.fhaachen.matse.movebot.handler.ReminderHandler
+import de.fhaachen.matse.movebot.handler.*
 import de.fhaachen.matse.movebot.handler.events.*
 import de.fhaachen.matse.movebot.lastDataChange
 import de.fhaachen.matse.movebot.model.*
@@ -53,6 +50,19 @@ object DataChangeEventListener {
 
         ReminderHandler.reminderSendListener += object : ReminderSend {
             override fun onReminderSend(challenger: Challenger, reminder: Reminder) {
+                lastDataChange = LocalDateTime.now()
+            }
+        }
+
+
+        TeamHandler.teamCreatedListener += object : TeamCreated {
+            override fun onTeamCreation(challenger: Challenger, team: Team) {
+                lastDataChange = LocalDateTime.now()
+            }
+        }
+
+        TeamHandler.teamJoinedListener += object : TeamJoined {
+            override fun onTeamJoin(challenger: Challenger, team: Team) {
                 lastDataChange = LocalDateTime.now()
             }
         }

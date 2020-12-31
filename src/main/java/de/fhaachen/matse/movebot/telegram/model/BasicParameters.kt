@@ -37,3 +37,4 @@ val goalParameter = object : Parameter("Ziel", "Gebe das Ziel für die Sporart e
         else "Gebe für die Sportart *${movementType.name}* dein Jahresziel als _${unitDescriptions[movementType.unit]}_ an.\n\nBeispiel: ${unitExamples[movementType.unit]} ${movementType.title}\n\nWas ist dein Ziel bis zum Ende des Jahres?"
     }
 }
+

@@ -1,9 +1,6 @@
 package de.fhaachen.matse.movebot.console
 
-import de.fhaachen.matse.movebot.handler.ChallengerHandler
-import de.fhaachen.matse.movebot.handler.MovementHandler
-import de.fhaachen.matse.movebot.handler.PlanHandler
-import de.fhaachen.matse.movebot.handler.ReminderHandler
+import de.fhaachen.matse.movebot.handler.*
 import de.fhaachen.matse.movebot.handler.events.*
 import de.fhaachen.matse.movebot.model.*
 import de.fhaachen.matse.movebot.prettyString
@@ -52,6 +49,17 @@ object ConsoleEventListener {
         ReminderHandler.reminderSendListener += object : ReminderSend {
             override fun onReminderSend(challenger: Challenger, reminder: Reminder) =
                     println("[onReminderSend] Erinnerung an ${challenger.nickname} um ${LocalTime.now().prettyString()} gesendet. $reminder")
+        }
+
+
+        TeamHandler.teamCreatedListener += object : TeamCreated {
+            override fun onTeamCreation(challenger: Challenger, team: Team) =
+                println("[onTeamCreation] Team ${team.name} (ID ${team.teamId}) um ${LocalTime.now().prettyString()} gesendet. Team wurde erstellt von ${challenger.nickname}")
+        }
+
+        TeamHandler.teamJoinedListener += object : TeamJoined {
+            override fun onTeamJoin(challenger: Challenger, team: Team) =
+                println("[onTeamCreation] User ${challenger.nickname} ist dem Team ${team.name} (ID ${team.teamId}) beigetreten.")
         }
     }
 }

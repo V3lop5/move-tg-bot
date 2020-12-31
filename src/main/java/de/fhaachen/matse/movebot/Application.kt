@@ -52,6 +52,7 @@ fun save(force: Boolean = false) {
     if (force || lastDataChange.isAfter(lastDataSave)) {
         println("[save] Speichere Daten... ${LocalDateTime.now().prettyString()}")
         ChallengerManager.save()
+        TeamManager.save()
         lastDataSave = LocalDateTime.now()
     }
 

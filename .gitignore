@@ -15,5 +15,9 @@
 /videos
 /challengers.json
 /challengers.json.backup
+/fights.json
+/fights.json.backup
+/teams.json
+/teams.json.backup
 chart_*
 500.png

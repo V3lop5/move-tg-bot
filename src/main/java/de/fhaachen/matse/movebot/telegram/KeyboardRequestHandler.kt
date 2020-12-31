@@ -16,7 +16,13 @@ object KeyboardRequestHandler {
     ) {
         val id = generateId()
         val keyboard = inlineKeyboardFromPair(answers.mapIndexed { index, answer -> answer to "#kbreq $id $index" })
-        val messages = chatIds.map { sendMessage(it, keyboard) }.map { it.chatId to it.messageId }
+        val messages = chatIds.mapNotNull {
+            try {
+                sendMessage(it, keyboard)
+            } catch (e: Exception) {
+                null
+            }
+        }.map { it.chatId to it.messageId }
         openRequests += KeyboardRequest(id, messages, answers, action)
     }
 

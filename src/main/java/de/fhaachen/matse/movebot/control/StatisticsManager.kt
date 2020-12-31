@@ -7,6 +7,7 @@ import de.fhaachen.matse.movebot.model.Statistic
 import de.fhaachen.matse.movebot.model.TimeInterval
 import de.fhaachen.matse.movebot.round
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
 object StatisticsManager {
@@ -21,13 +22,11 @@ object StatisticsManager {
     }
 
 
-    fun getSum(challenger: Challenger, movementType: MovementType? = null): Double {
-        val points = (if (movementType != null)
-            challenger.movements.filter { it.type == movementType }
-        else challenger.movements)
-            .map { it.value }.sum()
-
-        return points.round(2)
+    fun getSum(challenger: Challenger, movementType: MovementType? = null, after: LocalDateTime? = null): Double {
+        return challenger.movements
+            .filter { movementType == null || movementType == it.type }
+            .filter { after == null || it.datetime.isAfter(after) }
+            .map { it.value }.sum().round(2)
     }
 
     fun getCompetitorStatistic(timeInterval: TimeInterval = TimeInterval.WEEKLY) = StatisticBuilder()

@@ -30,9 +30,15 @@ object ChallengerManager {
         challengers.removeIf { it.telegramUser.id == telegramUser.id }
     }
 
-    fun findChallenger(telegramUser: User) = challengers.firstOrNull { it.telegramUser.id == telegramUser.id }
+    fun findChallenger(telegramUser: User) = findChallenger(telegramUser.id)
 
-    fun findChallenger(name: String) = challengers.firstOrNull { name.equals(it.customNickname, true) || name.equals(it.telegramUser.userName, true) || name.equals(it.telegramUser.getName(), true) }
+    fun findChallenger(id: Int) = challengers.firstOrNull { it.telegramUser.id == id }
+
+    fun findChallenger(name: String) = challengers.firstOrNull {
+        name.equals(it.customNickname, true) ||
+                name.equals(it.telegramUser.userName, true) ||
+                name.equals(it.telegramUser.getName(), true)
+    }
 
     fun save() {
         saveChallengers(challengers)
@@ -40,13 +46,20 @@ object ChallengerManager {
 
     fun countChallengers(onlyActive: Boolean = false): Int {
         return if (onlyActive)
-            challengers.count { it.movements.any { movement -> movement.datetime.isAfter(LocalDateTime.now().minusDays(7)) } }
+            challengers.count {
+                it.movements.any { movement ->
+                    movement.datetime.isAfter(
+                        LocalDateTime.now().minusDays(7)
+                    )
+                }
+            }
         else challengers.size
     }
 
 
     fun sendError(cause: String, e: Exception? = null) {
-        val message = "!!! Fehler !!!\n*$cause*" + if (e != null) "\n\nMessage: ${e.message}\nTrace: ${e.stackTrace.joinToString("\n")}" else "\n\nKeine weiteren Informationen verfügbar."
+        val message =
+            "!!! Fehler !!!\n*$cause*" + if (e != null) "\n\nMessage: ${e.message}\nTrace: ${e.stackTrace.joinToString("\n")}" else "\n\nKeine weiteren Informationen verfügbar."
         challengers.filter { it.hasPermission(ChallengerPermission.ADMIN) }.forEach { challenger ->
             try {
                 ChallengeBot.sendMessage(challenger.telegramUser.id, message)
@@ -55,5 +68,6 @@ object ChallengerManager {
         }
         System.err.println(message)
     }
+
 
 }
