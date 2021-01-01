@@ -28,11 +28,11 @@ object TeamCommand : ChallengerCommand("team", "Zeigt die Übersicht für ein Te
 
         val fights = TeamManager.getActiveFights(team).groupBy { it.other }
 
-        var message = "Informationen über Team _${team.name}_:\n\n"
+        var message = "Informationen über _${team.name}_:\n\n"
 
         message += team.members.map {
             "${ChallengerManager.findChallenger(it.challengerId)?.nickname ?: "Unknown"} (${getRelativeTimeSpan(it.jointime)} beigetreten)"
-        }.joinToString("\n- ", prefix = "Mitglieder:\n- ")
+        }.joinToString("\n- ", prefix = "Mitglieder:\n- ", postfix = "\n\n")
 
         message += fights.map { (other, fights) ->
             val maxOwnValue = fights.map { it.ownValue }.max()?:0
@@ -46,7 +46,8 @@ object TeamCommand : ChallengerCommand("team", "Zeigt die Übersicht für ein Te
                         }} ${it.movementType.emoji}" +
                                 " `${it.ownValue.padByMaxValue(maxOwnValue)} vs ${it.otherValue.padByMaxValue(maxOtherValue)}`" +
                                 " ${it.movementType.unit} ${it.movementType.title}" } +
-                    "\nEs steht *${fights.count { it.isLeading || it.isEqual }} zu ${fights.count { !it.isLeading }}*"
+                    "\nEs steht *${fights.count { it.isLeading}} zu ${fights.count { !it.isLeading && !it.isEqual }}*" +
+                    if (fights.any { it.isEqual }) " (Gleichstand bei *${fights.count { it.isEqual }} Sportart(en)*)" else ""
         }.joinToString("\n\n")
 
         sendComplete(chat, message)

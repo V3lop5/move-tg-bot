@@ -30,7 +30,8 @@ object TeamFightCommand : ChallengerCommand("teamfight", "Auflistung deiner Team
                 }} ${it.movementType.emoji}" +
                     " `${it.ownValue.padByMaxValue(maxOwnValue)} vs ${it.otherValue.padByMaxValue(maxOtherValue)}`" +
                     " ${it.movementType.unit} ${it.movementType.title}" } +
-            "\nEs steht *${fights.count { it.isLeading || it.isEqual }} zu ${fights.count { !it.isLeading }}*"
+                    "\nEs steht *${fights.count { it.isLeading}} zu ${fights.count { !it.isLeading && !it.isEqual }}*" +
+                    if (fights.any { it.isEqual }) " (Gleichstand bei *${fights.count { it.isEqual }} Sportart(en)*)" else ""
         }.joinToString("\n\n", "*Deine Teamkämpfe:*\n\n")
 
         sendComplete(chat, message)
