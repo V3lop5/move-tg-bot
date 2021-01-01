@@ -29,10 +29,16 @@ object LeaderboardCommand : ChallengerCommand("leaderboard", "Rangliste je Sport
     override fun handle(sender: AbsSender, user: User, chat: Chat, challenger: Challenger, params: List<String>) {
         val movementType = MovementType.of(params[0])
         val results = ChallengerManager.challengers
-            .map { Pair(StatisticsManager.getPoints(it, movementType), it.nickname) }
+            .map { Pair(StatisticsManager.getSum(it, movementType), it.nickname) }
+            .filter { it.first > 0 }
             .sortedByDescending { it.first }
             .mapIndexed { index, it -> "`${(index + 1).padStart(2)}. ${it.first.round(1).padStart(6)} ${movementType.unit}` ${it.second}" }
-        sendComplete(chat, results.fold("${movementType.title} Rangliste:\n") { a, b -> "$a\n$b" })
 
+        if(results.isEmpty()) {
+            sendComplete(chat, "Bisher wurden keine Aktivitäten in der Sportart ${movementType.title} ${movementType.emoji} erfasst.\nWenn du jetzt anfängst, sicherst du dir womöglich Platz 1!")
+            return
+        }
+
+        sendComplete(chat, results.fold("${movementType.emoji} *Rangliste ${movementType.title}*:\n") { a, b -> "$a\n$b" })
     }
 }
