@@ -44,7 +44,7 @@ fun main() {
 
     fixedRateTimer(period = 50000) {
         ReminderManager.checkRemindersFromChallengers()
-        // TODO Erst später aktivieren WeeklyStatManager.checkGoals()
+        WeeklyStatManager.checkGoals()
     }
 }
 

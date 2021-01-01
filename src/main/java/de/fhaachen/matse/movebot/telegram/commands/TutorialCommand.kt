@@ -59,7 +59,8 @@ object TutorialCommand : ChallengerCommand("tutorial", "Detaillierte Beschreibun
                 "Damit du in dieser Statistik auftauchst, musst du innerhalb der letzten Woche mindestens eine Aktivität erfasst haben.\nNutze dafür /${AddMovementCommand.command}"
 
         tutorial += "*Teams und Teamchallenges*\n\nIn diesem Jahr kannst du dich mit anderen Teilnehmern zu Teams zusammenschließen. Zum Anlegen eines Teams nutze den Befehl /${NewTeamCommand.command} und zum Beitritt den Befehl /${JoinTeamCommand.command}.\n\n" +
-                "Unabhängig von der allgemeinen Challenge können Teams untereinander Teamkämpfe austragen. Mithilfe des Befehls /${NewTeamFightCommand.command} kannst du ein anderes Team in einer Sportart herausfordern. Der Befehl /${TeamFightCommand.command} zeigt dir eine Übersicht aller Teamkämpfe an."
+                "Unabhängig von der allgemeinen Challenge können Teams untereinander Teamkämpfe austragen. Mithilfe des Befehls /${NewTeamFightCommand.command} kannst du ein anderes Team in einer Sportart herausfordern. Der Befehl /${TeamFightCommand.command} zeigt dir eine Übersicht aller Teamkämpfe, an denen du beteiligt bist.\n\n" +
+                "Der Befehl /${TeamCommand.command} zeigt die Informationen über ein Team an."
 
         tutorial += "*Hilfestellung*\n\nDu suchst nach einem Befehl und hast ihn bisher noch nicht gefunden? Kein Problem mit /help werden dir alle verfügbaren Befehle angezeigt!\n" +
                 "Zum Ausführen eines bestimmten Befehls kannst du / gefolgt von dem Namen des Befehls in das Nachrichtenfeld eingeben. Alternativ kannst du auch nur `/` eingeben und aus dem Menü den gesuchten Befehl auswählen." +
