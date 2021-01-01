@@ -83,7 +83,7 @@ object ChartsManager {
             arrayOf(Color(1, 74, 127), Color(253, 216, 11), Color(128, 0, 1), Color(165, 254, 4))
 
         statistic.statEntries.filterIsInstance<PointStatEntry>().forEach { entry ->
-            chart.addSeries(entry.label + " (${entry.value} km)", entry.value)
+            chart.addSeries(entry.label , entry.value)
         }
 
         return chart
