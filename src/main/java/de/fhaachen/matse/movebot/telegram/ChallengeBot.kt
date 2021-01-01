@@ -66,10 +66,21 @@ object ChallengeBot : TelegramLongPollingCommandBot(botName) {
     override fun processNonCommandUpdate(update: Update) {
         if (update.hasMessage()) {
             if (update.message.hasText()) {
-                println("[processNonCommandUpdate Text] ${update.message.from.getName()} (${update.message.from.id}) text='${update.message.text}'")
                 if (RequestHandler.hasPendingRequest(update.message.chat)) {
                     RequestHandler.processUpdate(update.message)
                     return
+                } else {
+                    println("[processNonCommandUpdate Text] ${update.message.from.getName()} (${update.message.from.id}) text='${update.message.text}'")
+                    sendMessage(
+                        update.message.chatId,
+                        "Wo waren wir? Sorry, ich hab nicht aufgepasst.\n" +
+                                "Klicke auf einen Button oder gebe ein Befehl (.B. /${AddMovementCommand.command}) ein.",
+                        inlineKeyboardFromPair(
+                            "Tutorial ansehen" to TutorialCommand.command,
+                            "Feedback geben" to FeedbackCommand.command,
+                            "Aktivität erfassen" to AddMovementCommand.command
+                        )
+                    )
                 }
             } else if (update.message.hasLocation())
                 LiveLocationManager.onLocationMessage(update.message)
@@ -182,14 +193,15 @@ object ChallengeBot : TelegramLongPollingCommandBot(botName) {
                                         "Dein Video wurde akzeptiert. Du kannst dir jetzt die Vorstellungsvideos der anderen Teilnehmer ansehen.",
                                         inlineKeyboardFromPair("Vorstellungen anstehen" to WhoisCommand.command)
                                     )
-                                    ChallengerManager.challengers.filter { it.telegramUser.id != telegramUser.id }.forEach {
-                                        sendMessage(
-                                            it.telegramUser.id,
-                                            "$nickname hat ein Vorstellungsvideo hochgeladen.\n" +
-                                                    if (!it.shareVideoAndGoals) "Damit du dir das Video ansehen kannst, musst du selbst ein Video aufnehmen und an diesen Bot schicken." else "",
-                                            inlineKeyboardFromPair("Jetzt ansehen" to WhoisCommand.command + " " + nickname)
-                                        )
-                                    }
+                                    ChallengerManager.challengers.filter { it.telegramUser.id != telegramUser.id }
+                                        .forEach {
+                                            sendMessage(
+                                                it.telegramUser.id,
+                                                "$nickname hat ein Vorstellungsvideo hochgeladen.\n" +
+                                                        if (!it.shareVideoAndGoals) "Damit du dir das Video ansehen kannst, musst du selbst ein Video aufnehmen und an diesen Bot schicken." else "",
+                                                inlineKeyboardFromPair("Jetzt ansehen" to WhoisCommand.command + " " + nickname)
+                                            )
+                                        }
                                 } else {
                                     sendMessage(
                                         telegramUser.id,
@@ -197,7 +209,8 @@ object ChallengeBot : TelegramLongPollingCommandBot(botName) {
                                     )
                                 }
                             }
-                        ) }
+                        )
+                    }
                 }
                 return
             }
