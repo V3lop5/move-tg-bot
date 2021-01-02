@@ -24,7 +24,11 @@ object BotStatusCommand : ChallengerCommand("botstatus", "Zeigt den aktuellen St
                 "\n*Anzahl Teilnehmer*: ${ChallengerManager.countChallengers()} (${ChallengerManager.countChallengers(true)} aktiv)" +
                 "\n*Erfasste Bewegungen*: ${ChallengerManager.challengers.sumBy { it.movements.size }}" +
                 "\n*Letzte Datenänderung*: ${getRelativeTimeSpan(lastDataChange)}" +
-                "\n*Letzte Speicherung*: ${getRelativeTimeSpan(lastDataSave)}"
+                "\n*Letzte Speicherung*: ${getRelativeTimeSpan(lastDataSave)}" +
+                "\n\n*Summe Trainingspläne*: ${ChallengerManager.challengers.sumBy { it.plans.size }}" +
+                "\n*Summe Erinnerungen*: ${ChallengerManager.challengers.sumBy { it.reminders.size }}" +
+                "\n*Summe Jahresziele*: ${ChallengerManager.challengers.sumBy { it.goals.size }}" +
+                "\n*Eingereichte Videos*: ${ChallengerManager.challengers.count { it.isVideoAccepted }}"
 
         sendComplete(chat, status)
     }
