@@ -18,8 +18,8 @@ object ChallengeCommand : ChallengerCommand("challenge", "Du willst wissen, wie 
                 "Deine persönlichen Ziele:\n${challenger.goals.map { (type, goal) -> 
                     StatisticsManager.getSum(challenger, type).let { "`${(minOf(it/goal,1.0) * 100).toInt().padStart(3)}` % ${type.emoji}   $it von *$goal ${type.unit}* ${type.title} " } 
                 }.joinToString(prefix = "- ", separator = "\n- ")}\n\n" +
-                "Nach Bewegungstyp:\n${MovementType.values().map { Pair(it, StatisticsManager.getSum(challenger, it)) }.filter { it.second > 0 }
-                    .map { (type, sum) -> "${type.emoji} `${sum.padStart(4)}` ${type.unit} *${type.name}* " }.joinToString(prefix = "", separator = "\n")}\n\n" +
+                "Nach Bewegungstyp:\n${MovementType.values().map { Triple(it, StatisticsManager.getSum(challenger, it), StatisticsManager.getPoints(challenger, it)) }.filter { it.second > 0 }
+                    .map { (type, sum, points) -> "${type.emoji} `${sum.padStart(4)}` ${type.unit} *${type.name}* ($points Pkt.)" }.joinToString(prefix = "", separator = "\n")}\n\n" +
                 "Deine letzten Aktivitäten:\n${
                 challenger.movements.sortedBy { it.datetime }.takeLast(5).joinToString(prefix = "- ", separator = "\n- ") { "${it.value} ${it.type.unit} ${it.type.name} (${getRelativeTimeSpan(it.datetime)})" }}\n\n" +
                 "Wo sind die anderen? /${CompetitorCommand.command}"
