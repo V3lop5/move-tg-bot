@@ -63,8 +63,8 @@ object WeeklyStatManager {
 
         val messageOverview = "*Ergebnis der Woche*\n" +
                 "Wir haben gemeinsam *$totalPoints Punkte* erreicht.\n" +
-                (if (totalPoints > POINT_GOAL) "\uD83C\uDF89\uD83C\uDF89 *über $POINT_GOAL Punkte in einer Woche!* \uD83C\uDF89\uD83C\uDF89" else "Schaffen wir gemeinsam die $POINT_GOAL nächste Woche?") + "\n" +
-                stat.statEntries.foldIndexed("") { index, old, entry -> "$old\n${index + 1}. *${entry.label}* (${entry.value()} km)" }
+                (if (totalPoints > POINT_GOAL) "\uD83C\uDF89\uD83C\uDF89 *über $POINT_GOAL Punkte in einer Woche!* \uD83C\uDF89\uD83C\uDF89" else "Schaffen wir nächste Woche gemeinsam die $POINT_GOAL Punkte?") + "\n" +
+                stat.statEntries.foldIndexed("") { index, old, entry -> "$old\n${index + 1}. *${entry.label}* (${entry.value()} Punkte)" }
 
         ChallengerManager.challengers.forEach { challenger ->
             val customMessage = if (stat.containsChallenger(challenger)) {
@@ -73,7 +73,7 @@ object WeeklyStatManager {
                     "Herzlichen Glückwunsch zu *Platz $place*!"
                 else
                     "Nächste Woche wird es besser! :P"
-            } else "Du scheinst dich nicht zu bewegen. Lebst du noch?"
+            } else "Du scheinst dich nicht zu bewegen. Lebst du noch? (PS: Hier folgen demnächst noch weitere Motivationssprüche)"
 
             try {
                 ChallengeBot.execute(SendPhoto().setChatId(challenger.telegramUser.id.toLong())

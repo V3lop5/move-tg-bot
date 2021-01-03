@@ -41,7 +41,7 @@ object StatisticsManager {
      */
     fun getLastWeekStatistic() = StatisticBuilder()
             .addChallenger(ChallengerManager.challengers)
-            .onlyDateInInterval(LocalDate.now().atTime(18, 0), -7, ChronoUnit.DAYS)
+            .onlyDateInInterval(LocalDate.now().atTime(19, 50), -7, ChronoUnit.DAYS)
             .groupByTimeInterval(TimeInterval.DAILY)
             .cumulateData()
             .build("Competitors (last week)")
