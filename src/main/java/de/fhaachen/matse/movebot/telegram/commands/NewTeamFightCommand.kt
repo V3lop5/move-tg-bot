@@ -1,6 +1,7 @@
 package de.fhaachen.matse.movebot.telegram.commands
 
 import de.fhaachen.matse.movebot.control.TeamManager
+import de.fhaachen.matse.movebot.escapeMarkdown
 import de.fhaachen.matse.movebot.model.Challenger
 import de.fhaachen.matse.movebot.model.MovementType
 import de.fhaachen.matse.movebot.model.Plan
@@ -32,7 +33,7 @@ object NewTeamFightCommand : ChallengerCommand("newteamfight", "Trete in einem K
         val other = TeamManager.teams.find { it.name.equals(teamname, true) }
 
         if (other == null) {
-            sendComplete(chat, "Es existiert kein ein Team mit dem Namen $teamname. Du kannst deshalb kein Wettkampf starten.")
+            sendComplete(chat, "Es existiert kein Team mit dem Namen $teamname. Du kannst deshalb kein Wettkampf starten.")
             return
         }
 
@@ -43,14 +44,14 @@ object NewTeamFightCommand : ChallengerCommand("newteamfight", "Trete in einem K
         }
 
         if (TeamManager.hasFight(own, other, movementType)) {
-            sendComplete(chat, "Es gibt bereits einen Wettkampf der Sportart *${movementType.title}* zwischen den Teams _${own.name}_ und _${other.name}_.")
+            sendComplete(chat, "Es gibt bereits einen Wettkampf der Sportart *${movementType.title}* zwischen den Teams _${own.name.escapeMarkdown()}_ und _${other.name.escapeMarkdown()}_.")
             return
         }
 
         TeamManager.onFightRequest(own, other, movementType)
         own.members.forEach {
             ChallengeBot.sendMessage(it.challengerId, "Anfrage für Teamkampf verschickt!\n" +
-                    "${challenger.nickname} hat im Namen deines Teams _${own.name}_ eine Herausforderung zum Kampf in der Sportart ${movementType.title} an das Team _${other.name}_ verschickt.\n" +
+                    "${challenger.nickname.escapeMarkdown()} hat im Namen deines Teams _${own.name.escapeMarkdown()}_ eine Herausforderung zum Kampf in der Sportart ${movementType.title} an das Team _${other.name.escapeMarkdown()}_ verschickt.\n" +
                     "Ob sie die Herausforderung annehmen werden?")
         }
     }

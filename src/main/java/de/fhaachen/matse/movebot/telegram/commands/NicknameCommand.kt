@@ -1,5 +1,6 @@
 package de.fhaachen.matse.movebot.telegram.commands
 
+import de.fhaachen.matse.movebot.escapeMarkdown
 import de.fhaachen.matse.movebot.model.Challenger
 import de.fhaachen.matse.movebot.telegram.model.ChallengerCommand
 import de.fhaachen.matse.movebot.telegram.model.Parameter
@@ -18,6 +19,6 @@ object NicknameCommand : ChallengerCommand("nickname", "Ändere deinen Anzeigena
     override fun handle(sender: AbsSender, user: User, chat: Chat, challenger: Challenger, params: List<String>) {
         val nickname = params[0]
         challenger.customNickname = nickname
-        sendComplete(chat, "Dein Anzeigename wurde auf *${challenger.nickname}* geändert.")
+        sendComplete(chat, "Dein Anzeigename wurde auf *${challenger.nickname.escapeMarkdown()}* geändert.")
     }
 }

@@ -24,7 +24,7 @@ data class Challenger(val telegramUser: User) {
     val goals = mutableMapOf<MovementType, Int>()
 
     val nickname: String
-        get() = if (customNickname != null) customNickname!! else telegramUser.getName() ?: "(ID: ${telegramUser.id})"
+        get() = if (customNickname != null) customNickname!! else telegramUser.getName() ?: "Unknown (ID: ${telegramUser.id})"
 
 
     fun addMovement(movement: Movement) {

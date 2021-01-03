@@ -1,6 +1,7 @@
 package de.fhaachen.matse.movebot.control
 
 import de.fhaachen.matse.movebot.POINT_GOAL
+import de.fhaachen.matse.movebot.escapeMarkdown
 import de.fhaachen.matse.movebot.handler.MovementHandler
 import de.fhaachen.matse.movebot.handler.events.MovementAdd
 import de.fhaachen.matse.movebot.model.Challenger
@@ -34,7 +35,7 @@ object MovePointsComplete : MovementAdd {
                 "Zwischen der ersten und der neusten Aktivität lagen ${Duration.between(challenger.movements.map { it.datetime }.min(), challenger.movements.map { it.datetime }.max()).toDays()} Tage.\n\n" +
                 "Danke für deine Teilnahme! Bist du auch bei der nächsten Challenge dabei?")
 
-        val message = "*${challenger.nickname}* hat $POINT_GOAL Punkte erreicht!"
+        val message = "*${challenger.nickname.escapeMarkdown()}* hat $POINT_GOAL Punkte erreicht!"
         ChallengerManager.challengers.forEach {
             try {
                 ChallengeBot.sendMessage(it.telegramUser.id, message)

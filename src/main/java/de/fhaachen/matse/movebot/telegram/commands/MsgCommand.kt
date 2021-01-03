@@ -32,7 +32,7 @@ object MsgCommand : ChallengerCommand("msg", "Kurznachricht an Teilnehmer versch
         val message = "_${challenger.nickname.escapeMarkdown()} hat dir eine Nachricht geschickt:_\n" + params[1].replace("\\n", "\n")
 
         ChallengeBot.sendMessage(receiver.telegramUser.id, message)
-        sendComplete(chat, "Die Nachricht wurde an ${receiver.nickname} verschickt.\n\nSo sieht die Nachricht aus:\n$message")
+        sendComplete(chat, "Die Nachricht wurde an ${receiver.nickname.escapeMarkdown()} verschickt.\n\nSo sieht die Nachricht aus:\n$message")
     }
 
 }

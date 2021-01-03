@@ -1,6 +1,7 @@
 package de.fhaachen.matse.movebot.control
 
 import de.fhaachen.matse.movebot.POINT_GOAL
+import de.fhaachen.matse.movebot.escapeMarkdown
 import de.fhaachen.matse.movebot.handler.MovementHandler
 import de.fhaachen.matse.movebot.handler.events.MovementAdd
 import de.fhaachen.matse.movebot.model.Challenger
@@ -36,7 +37,7 @@ object GoalComplete : MovementAdd {
 
         if (!shareVideoAndGoals) return
 
-        val message = "*${challenger.nickname}* hat sein persönliches Ziel von *$goal ${type.unit} ${type.title}* erreicht!"
+        val message = "*${challenger.nickname.escapeMarkdown()}* hat sein persönliches Ziel von *$goal ${type.unit} ${type.title}* erreicht!"
         ChallengerManager.challengers.forEach {
             try {
                 ChallengeBot.sendMessage(it.telegramUser.id, message)

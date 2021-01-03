@@ -1,5 +1,6 @@
 package de.fhaachen.matse.movebot.control
 
+import de.fhaachen.matse.movebot.escapeMarkdown
 import de.fhaachen.matse.movebot.handler.TeamHandler
 import de.fhaachen.matse.movebot.model.*
 import de.fhaachen.matse.movebot.telegram.ChallengeBot
@@ -23,7 +24,7 @@ object TeamManager {
         team.members.forEach {
             ChallengeBot.sendMessage(
                 it.challengerId,
-                "Neues Teammitglied: ${challenger.nickname} ist dem Team _${team.name}_ beigetreten."
+                "Neues Teammitglied: ${challenger.nickname.escapeMarkdown()} ist dem Team _${team.name.escapeMarkdown()}_ beigetreten."
             )
         }
         team.members += TeamMember(challenger.telegramUser.id, LocalDateTime.now())
@@ -48,7 +49,7 @@ object TeamManager {
             { chatId, keyboard ->
                 ChallengeBot.sendMessage(
                     chatId,
-                    "${challenger.nickname} möchte dem Team _${team.name}_ beitreten.\nNimmst du die Anfrage an?",
+                    "${challenger.nickname.escapeMarkdown()} möchte dem Team _${team.name.escapeMarkdown()}_ beitreten.\nNimmst du die Anfrage an?",
                     keyboard
                 )
             },
@@ -57,7 +58,7 @@ object TeamManager {
 
         ChallengeBot.sendMessage(
             challenger.telegramUser.id,
-            "Deine Anfrage an das Team $teamname wurde verschickt. Bitte warte, bis dich ein Teammitglied annimmt."
+            "Deine Anfrage an das Team ${team.name.escapeMarkdown()} wurde verschickt. Bitte warte, bis dich ein Teammitglied annimmt."
         )
     }
 
@@ -65,7 +66,7 @@ object TeamManager {
         if (!accepted) {
             ChallengeBot.sendMessage(
                 challenger.telegramUser.id,
-                "Deine Anfrage wurde abgelehnt. Du wurdest nicht zum Team _${team.name}_ hinzugefügt."
+                "Deine Anfrage wurde abgelehnt. Du wurdest nicht zum Team _${team.name.escapeMarkdown()}_ hinzugefügt."
             )
             return
         }
@@ -73,11 +74,11 @@ object TeamManager {
         if (!canJoin(challenger, team)) {
             ChallengeBot.sendMessage(
                 challenger.telegramUser.id,
-                "Deine Anfrage wurde angenommen. Allerdings kannst du dem Team _${team.name}_ nicht mehr beitreten.\nBist du vielleicht in einem anderen Team?"
+                "Deine Anfrage wurde angenommen. Allerdings kannst du dem Team _${team.name.escapeMarkdown()}_ nicht mehr beitreten.\nBist du vielleicht in einem anderen Team?"
             )
             ChallengeBot.sendMessage(
                 answeredBy,
-                "Du hast die Anfrage von ${challenger.nickname} angenommen. Allerdings darf dieser Teilnehmer nicht mehr dem Team ${team.name} beitreten."
+                "Du hast die Anfrage von ${challenger.nickname.escapeMarkdown()} angenommen. Allerdings darf dieser Teilnehmer nicht mehr dem Team ${team.name.escapeMarkdown()} beitreten."
             )
             return
         }
@@ -85,7 +86,7 @@ object TeamManager {
         addTeamMember(team, challenger)
         ChallengeBot.sendMessage(
             challenger.telegramUser.id,
-            "Deine Anfrage wurde angenommen. Du bist nun Mitglied des Teams _${team.name}_."
+            "Deine Anfrage wurde angenommen. Du bist nun Mitglied des Teams _${team.name.escapeMarkdown()}_."
         )
     }
 
@@ -123,7 +124,7 @@ object TeamManager {
             { chatId, keyboard ->
                 ChallengeBot.sendMessage(
                     chatId,
-                    "Das Team _${own.name}_ fordert dein Team _${other.name}_ zum Wettkampf in der Sportart ${movementType.title} heraus. Nimmst du die Herausforderung an?",
+                    "Das Team _${own.name.escapeMarkdown()}_ fordert dein Team _${other.name.escapeMarkdown()}_ zum Wettkampf in der Sportart ${movementType.title} heraus. Nimmst du die Herausforderung an?",
                     keyboard
                 )
             },
@@ -133,7 +134,7 @@ object TeamManager {
 
     fun onFightRequestAnswer(own: Team, other: Team, movementType: MovementType, accepted: Boolean, answeredBy: Int) {
         if (!accepted) {
-            own.members.forEach { ChallengeBot.sendMessage(it.challengerId, "Upps! Das Team _${other.name}_ hat die Anfrage abgelehnt.") }
+            own.members.forEach { ChallengeBot.sendMessage(it.challengerId, "Upps! Das Team _${other.name.escapeMarkdown()}_ hat die Anfrage abgelehnt.") }
             return
         }
 
@@ -147,13 +148,13 @@ object TeamManager {
         own.members.forEach {
             ChallengeBot.sendMessage(
                 it.challengerId,
-                "Dein Team (_${own.name}_) ist in einem Wettkampf mit Team _${other.name}_. Erziele als Team mehr ${movementType.unit} in der Sportart ${movementType.title} als das andere Team!"
+                "Dein Team (_${own.name.escapeMarkdown()}_) ist in einem Wettkampf mit Team _${other.name.escapeMarkdown()}_. Erziele als Team mehr ${movementType.unit} in der Sportart ${movementType.title} als das andere Team!"
             )
         }
         other.members.forEach {
             ChallengeBot.sendMessage(
                 it.challengerId,
-                "Dein Team (_${other.name}_) ist in einem Wettkampf mit Team _${own.name}_. Erziele als Team mehr ${movementType.unit} in der Sportart ${movementType.title} als das andere Team!"
+                "Dein Team (_${other.name.escapeMarkdown()}_) ist in einem Wettkampf mit Team _${own.name.escapeMarkdown()}_. Erziele als Team mehr ${movementType.unit} in der Sportart ${movementType.title} als das andere Team!"
             )
         }
 

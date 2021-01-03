@@ -2,6 +2,7 @@ package de.fhaachen.matse.movebot.telegram.commands
 
 import de.fhaachen.matse.movebot.control.ChallengerManager
 import de.fhaachen.matse.movebot.control.TeamManager
+import de.fhaachen.matse.movebot.escapeMarkdown
 import de.fhaachen.matse.movebot.getRelativeTimeSpan
 import de.fhaachen.matse.movebot.model.Challenger
 import de.fhaachen.matse.movebot.padByMaxValue
@@ -31,7 +32,7 @@ object TeamCommand : ChallengerCommand("team", "Zeigt die Übersicht für ein Te
         var message = "Informationen über _${team.name}_:\n\n"
 
         message += team.members.map {
-            "${ChallengerManager.findChallenger(it.challengerId)?.nickname ?: "Unknown"} (${getRelativeTimeSpan(it.jointime)} beigetreten)"
+            "${ChallengerManager.findChallenger(it.challengerId)?.nickname?.escapeMarkdown() ?: "Unknown"} (${getRelativeTimeSpan(it.jointime)} beigetreten)"
         }.joinToString("\n- ", prefix = "Mitglieder:\n- ", postfix = "\n\n")
 
         message += fights.map { (other, fights) ->

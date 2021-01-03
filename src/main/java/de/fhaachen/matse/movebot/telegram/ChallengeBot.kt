@@ -3,6 +3,7 @@ package de.fhaachen.matse.movebot.telegram
 import de.fhaachen.matse.movebot.botName
 import de.fhaachen.matse.movebot.control.ChallengerManager
 import de.fhaachen.matse.movebot.control.LiveLocationManager
+import de.fhaachen.matse.movebot.escapeMarkdown
 import de.fhaachen.matse.movebot.handler.ChallengerHandler
 import de.fhaachen.matse.movebot.model.ChallengerPermission
 import de.fhaachen.matse.movebot.telegram.ChallengeBot.registerDefaultAction
@@ -180,7 +181,7 @@ object ChallengeBot : TelegramLongPollingCommandBot(botName) {
                                     SendVideo()
                                         .setVideo(presentationVideoId)
                                         .setChatId(chatId.toLong())
-                                        .setCaption("Darf dieses Video von ${nickname} mit allen geteilt werden?")
+                                        .setCaption("Darf dieses Video von ${nickname.escapeMarkdown()} mit allen geteilt werden?")
                                         .setParseMode("markdown")
                                         .setReplyMarkup(keyboard)
                                 )
@@ -197,7 +198,7 @@ object ChallengeBot : TelegramLongPollingCommandBot(botName) {
                                         .forEach {
                                             sendMessage(
                                                 it.telegramUser.id,
-                                                "$nickname hat ein Vorstellungsvideo hochgeladen.\n" +
+                                                "${nickname.escapeMarkdown()} hat ein Vorstellungsvideo hochgeladen.\n" +
                                                         if (!it.shareVideoAndGoals) "Damit du dir das Video ansehen kannst, musst du selbst ein Video aufnehmen und an diesen Bot schicken." else "",
                                                 inlineKeyboardFromPair("Jetzt ansehen" to WhoisCommand.command + " " + nickname)
                                             )
