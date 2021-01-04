@@ -75,7 +75,7 @@ object ChallengeBot : TelegramLongPollingCommandBot(botName) {
                     sendMessage(
                         update.message.chatId,
                         "Wo waren wir? Sorry, ich hab nicht aufgepasst.\n" +
-                                "Klicke auf einen Button oder gebe ein Befehl (.B. /${AddMovementCommand.command}) ein.",
+                                "Klicke auf einen Button oder gebe ein Befehl (z.B. /${AddMovementCommand.command}) ein.",
                         inlineKeyboardFromPair(
                             "Tutorial ansehen" to TutorialCommand.command,
                             "Feedback geben" to FeedbackCommand.command,
