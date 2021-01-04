@@ -2,6 +2,7 @@ package de.fhaachen.matse.movebot.telegram.model
 
 import de.fhaachen.matse.movebot.telegram.ChallengeBot
 import de.fhaachen.matse.movebot.telegram.MessageHandler
+import de.fhaachen.matse.movebot.telegram.getName
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.BotCommand
 import org.telegram.telegrambots.meta.api.objects.Chat
 import org.telegram.telegrambots.meta.api.objects.Message
@@ -51,6 +52,7 @@ abstract class Command(val command: String,
             parsedValues.add(value)
         }
 
+        println("[Command /$command] ${user.getName()} (${user.id}) executed with params $parsedValues")
         handle(sender, user, chat, parsedValues)
     }
 
