@@ -52,6 +52,7 @@ object ChallengeBot : TelegramLongPollingCommandBot(botName) {
         register(TeamFightCommand)
         register(TeamCommand)
         register(TutorialCommand)
+        register(UserStatusCommand)
         register(WhoisCommand)
 
         registerDefaultAction { _, message ->
