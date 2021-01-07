@@ -39,7 +39,7 @@ object UserStatusCommand : ChallengerCommand("userstatus", "Status eines Users a
                 " > Sprache: ${suspect.telegramUser.languageCode}\n" +
                 " > Vorname: ${suspect.telegramUser.firstName.escapeMarkdown().ifBlank { "_nicht gesetzt_" }}\n" +
                 " > Nachname: ${suspect.telegramUser.lastName.escapeMarkdown().ifBlank { "_nicht gesetzt_" }}\n" +
-                " > Benutzername: ${suspect.telegramUser.userName.escapeMarkdown().ifBlank { "_nicht gesetzt_" }}\n\n" +
+                " > Benutzername: @${suspect.telegramUser.userName.escapeMarkdown().ifBlank { "_nicht gesetzt_" }}\n\n" +
                 "*Teilnehmer:*\n" +
                 " > Anzeigename: ${suspect.nickname.escapeMarkdown()}\n" +
                 " > Beitritt: ${suspect.joinTimestamp.prettyString()}\n" +
