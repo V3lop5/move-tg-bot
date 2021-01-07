@@ -66,7 +66,7 @@ object WeeklyStatManager {
                 (if (totalPoints > POINT_GOAL) "\uD83C\uDF89\uD83C\uDF89 *über $POINT_GOAL Punkte in einer Woche!* \uD83C\uDF89\uD83C\uDF89" else "Schaffen wir nächste Woche gemeinsam die $POINT_GOAL Punkte?") + "\n" +
                 stat.statEntries.foldIndexed("") { index, old, entry -> "$old\n${index + 1}. *${entry.label}* (${entry.value()} Punkte)" }
 
-        ChallengerManager.challengers.forEach { challenger ->
+        ChallengerManager.challengers.filterNot { it.suspicious }.forEach { challenger ->
             val customMessage = if (stat.containsChallenger(challenger)) {
                 val place = stat.statEntries.indexOfFirst { it.challenger == challenger } + 1
                 if (place <= ChallengerManager.challengers.size * 0.8)

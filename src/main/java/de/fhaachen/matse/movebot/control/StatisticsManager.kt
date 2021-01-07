@@ -40,7 +40,7 @@ object StatisticsManager {
      * @return Statistic
      */
     fun getLastWeekStatistic() = StatisticBuilder()
-            .addChallenger(ChallengerManager.challengers)
+            .addChallenger(ChallengerManager.challengers.filterNot { it.suspicious })
             .onlyDateInInterval(LocalDate.now().atTime(19, 50), -7, ChronoUnit.DAYS)
             .groupByTimeInterval(TimeInterval.DAILY)
             .cumulateData()
@@ -51,7 +51,7 @@ object StatisticsManager {
     fun getCurrentMonthPoints(challenger: Challenger) = challenger.movements.filter { it.datetime.month == LocalDate.now().month }.sumByDouble { it.points }.round(2)
 
     fun getMonthlyStatistic(): Statistic = StatisticBuilder()
-            .addChallenger(ChallengerManager.challengers)
+            .addChallenger(ChallengerManager.challengers.filterNot { it.suspicious })
             .groupByTimeInterval(TimeInterval.MONTHLY)
             .build("Competitors (${TimeInterval.MONTHLY.name}, uncollated)")
 }
