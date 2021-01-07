@@ -15,6 +15,7 @@ import org.telegram.telegrambots.meta.bots.AbsSender
 
 object NewTeamFightCommand : ChallengerCommand("newteamfight", "Trete in einem Kampf mit einem anderen Team.") {
     init {
+        requirements += notSuspiciousRequirement
         parameters.add(movementTypeParameter)
         parameters.add(Parameter("Teamname", "Gebe den Namen des Teams ein, mit dem sich dein Team messen soll.", singleWord = false))
     }

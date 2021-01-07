@@ -7,6 +7,7 @@ import de.fhaachen.matse.movebot.prettyString
 import de.fhaachen.matse.movebot.telegram.model.AllowedValuesParameter
 import de.fhaachen.matse.movebot.telegram.model.ChallengerCommand
 import de.fhaachen.matse.movebot.telegram.model.Parameter
+import de.fhaachen.matse.movebot.telegram.model.notSuspiciousRequirement
 import org.telegram.telegrambots.meta.api.objects.Chat
 import org.telegram.telegrambots.meta.api.objects.User
 import org.telegram.telegrambots.meta.bots.AbsSender
@@ -18,6 +19,7 @@ object NewReminderCommand : ChallengerCommand("newreminder", "Du denkst selber n
     private val timeFormatter = DateTimeFormatter.ofPattern("HH:mm", Locale.GERMAN)
 
     init {
+        requirements += notSuspiciousRequirement
         parameters.add(AllowedValuesParameter("Intervall", "Wann möchtest du erinnert werden?", ReminderType.values().map { it.name }))
 
         parameters.add(object : Parameter("Uhrzeit", "Gebe die Uhrzeit ein. (hh:mm oder 9 für 9:00)") {

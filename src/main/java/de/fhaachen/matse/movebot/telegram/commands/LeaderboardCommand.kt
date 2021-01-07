@@ -19,6 +19,8 @@ import java.util.*
 object LeaderboardCommand : ChallengerCommand("leaderboard", "Rangliste je Sportart.") {
 
     init {
+        requirements += notSuspiciousRequirement
+
         onlyUserChat()
         parameters.add(movementTypeParameter)
     }
@@ -26,6 +28,7 @@ object LeaderboardCommand : ChallengerCommand("leaderboard", "Rangliste je Sport
     override fun handle(sender: AbsSender, user: User, chat: Chat, challenger: Challenger, params: List<String>) {
         val movementType = MovementType.of(params[0])
         val results = ChallengerManager.challengers
+            .filterNot { it.suspicious }
             .map { Pair(StatisticsManager.getSum(it, movementType), it.nickname) }
             .filter { it.first > 0 }
             .sortedByDescending { it.first }

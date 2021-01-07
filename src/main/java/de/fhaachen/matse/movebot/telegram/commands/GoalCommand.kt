@@ -2,10 +2,7 @@ package de.fhaachen.matse.movebot.telegram.commands
 
 import de.fhaachen.matse.movebot.model.Challenger
 import de.fhaachen.matse.movebot.model.MovementType
-import de.fhaachen.matse.movebot.telegram.model.ChallengerCommand
-import de.fhaachen.matse.movebot.telegram.model.goalParameter
-import de.fhaachen.matse.movebot.telegram.model.inlineKeyboardFromPair
-import de.fhaachen.matse.movebot.telegram.model.movementTypeParameter
+import de.fhaachen.matse.movebot.telegram.model.*
 import org.telegram.telegrambots.meta.api.objects.Chat
 import org.telegram.telegrambots.meta.api.objects.User
 import org.telegram.telegrambots.meta.bots.AbsSender
@@ -14,6 +11,8 @@ object GoalCommand :
     ChallengerCommand("goal", "Lege dir ein persönliches Ziel fest. Überlege es dir gut, der Bot wird dich erinnern!") {
 
     init {
+        requirements += notSuspiciousRequirement
+
         onlyUserChat()
         parameters.add(movementTypeParameter)
         parameters.add(goalParameter)

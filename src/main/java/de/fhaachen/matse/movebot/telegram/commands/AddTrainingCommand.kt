@@ -12,6 +12,7 @@ import org.telegram.telegrambots.meta.bots.AbsSender
 object AddTrainingCommand : ChallengerCommand("addtraining", "Training ist wieder geschafft. Jetzt nur noch schnell die Kilometer festhalten. Hiermit kannst du es ganz bequem per Plan machen.") {
     init {
         requirements += inYearRequirement
+        requirements += notSuspiciousRequirement
 
         parameters.add(Parameter("Name des Plans", "Welches Training hast du gemacht?", optional = true))
     }

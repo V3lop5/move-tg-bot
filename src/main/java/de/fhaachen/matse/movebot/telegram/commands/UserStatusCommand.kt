@@ -43,6 +43,7 @@ object UserStatusCommand : ChallengerCommand("userstatus", "Status eines Users a
                 "*Teilnehmer:*\n" +
                 " > Anzeigename: ${suspect.nickname.escapeMarkdown()}\n" +
                 " > Beitritt: ${suspect.joinTimestamp.prettyString()}\n" +
+                " > Verdächtigt: ${suspect.suspicious}\n" +
                 " > Pläne: ${suspect.plans.size}\n" +
                 " > Erinnerungen: ${suspect.reminders.size}\n" +
                 " > Video geteilt: ${suspect.isVideoAccepted}\n\n" +
@@ -53,7 +54,8 @@ object UserStatusCommand : ChallengerCommand("userstatus", "Status eines Users a
                     .map { (type, sum, points) -> "${type.emoji} `${sum.padStart(4)}` ${type.unit} *${type.name}* ($points Pkt.)" }.joinToString(prefix = "", separator = "\n")}\n\n" +
                 "*Letzte Aktivitäten:*\n${
                 suspect.movements.sortedBy { it.datetime }.takeLast(5).joinToString(prefix = "- ", separator = "\n- ") { "${it.value} ${it.type.unit} ${it.type.name} (${getRelativeTimeSpan(it.datetime)})" }}\n\n" +
-                "${suspect.nickname.escapeMarkdown()} erreichte in ${suspect.movements.size} Aktivitäten *${StatisticsManager.getPoints(suspect)}* Punkte!"
-        sendComplete(chat, message, inlineKeyboardFromPair("Nachricht senden" to "${MsgCommand.command} ${suspect.telegramUser.id}"))
+                "${suspect.nickname.escapeMarkdown()} erreichte in ${suspect.movements.size} Aktivitäten *${StatisticsManager.getPoints(suspect)}* Punkte!" +
+                if (suspect.suspicious) "\n*Der Benutzer wird der Täuschung verdächtigt und kann den Bot aktuell nur eingeschränkt nutzen!*" else ""
+        sendComplete(chat, message, inlineKeyboardFromPair("Nachricht senden" to "${MsgCommand.command} ${suspect.telegramUser.id}", "Suspicious Status ändern" to "${SuspiciousCommand.command} ${suspect.telegramUser.id}"))
     }
 }

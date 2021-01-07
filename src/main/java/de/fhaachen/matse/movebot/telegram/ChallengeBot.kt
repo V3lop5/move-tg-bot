@@ -48,6 +48,7 @@ object ChallengeBot : TelegramLongPollingCommandBot(botName) {
         register(NewTeamFightCommand)
         register(NicknameCommand)
         register(ShutdownCommand)
+        register(SuspiciousCommand)
         register(StartCommand)
         register(TeamFightCommand)
         register(TeamCommand)

@@ -6,16 +6,15 @@ import de.fhaachen.matse.movebot.model.MovementType
 import de.fhaachen.matse.movebot.model.Plan
 import de.fhaachen.matse.movebot.model.TeamMember
 import de.fhaachen.matse.movebot.round
-import de.fhaachen.matse.movebot.telegram.model.ChallengerCommand
-import de.fhaachen.matse.movebot.telegram.model.Parameter
-import de.fhaachen.matse.movebot.telegram.model.movementValueParameter
-import de.fhaachen.matse.movebot.telegram.model.movementTypeParameter
+import de.fhaachen.matse.movebot.telegram.model.*
 import org.telegram.telegrambots.meta.api.objects.Chat
 import org.telegram.telegrambots.meta.api.objects.User
 import org.telegram.telegrambots.meta.bots.AbsSender
 
 object JoinTeamCommand : ChallengerCommand("jointeam", "Trete einem Team bei.") {
     init {
+        requirements += notSuspiciousRequirement
+
         parameters.add(Parameter("Teamname", "Gebe einen Namen des Teams ein, dem du beitreten möchtest.", singleWord = false))
     }
 

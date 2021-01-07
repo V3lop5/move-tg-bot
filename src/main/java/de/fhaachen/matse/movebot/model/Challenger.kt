@@ -17,6 +17,7 @@ data class Challenger(val telegramUser: User) {
     var presentationVideoId: String? = null
     var shareVideoAndGoals: Boolean = false
     var isVideoAccepted: Boolean = false
+    var suspicious: Boolean = false
 
     val movements = mutableListOf<Movement>()
     val reminders = mutableListOf<Reminder>()

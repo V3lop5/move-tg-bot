@@ -11,6 +11,7 @@ data class TeamMember(
 
     fun getSum(movementType: MovementType, after: LocalDateTime): Double {
         val c = ChallengerManager.findChallenger(challengerId) ?: return 0.0
+        if (c.suspicious) return 0.0
         return StatisticsManager.getSum(c, movementType, maxOf(jointime, after))
     }
 }

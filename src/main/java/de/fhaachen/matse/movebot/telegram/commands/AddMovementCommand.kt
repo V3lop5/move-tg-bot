@@ -21,6 +21,7 @@ object AddMovementCommand : ChallengerCommand("addmovement", "Du hast dich beweg
 
     init {
         requirements += inYearRequirement
+        requirements += notSuspiciousRequirement
 
         parameters.add(movementTypeParameter)
         parameters.add(movementValueParameter)

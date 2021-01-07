@@ -4,11 +4,16 @@ import de.fhaachen.matse.movebot.control.TeamManager
 import de.fhaachen.matse.movebot.model.Challenger
 import de.fhaachen.matse.movebot.padByMaxValue
 import de.fhaachen.matse.movebot.telegram.model.ChallengerCommand
+import de.fhaachen.matse.movebot.telegram.model.notSuspiciousRequirement
 import org.telegram.telegrambots.meta.api.objects.Chat
 import org.telegram.telegrambots.meta.api.objects.User
 import org.telegram.telegrambots.meta.bots.AbsSender
 
 object TeamFightCommand : ChallengerCommand("teamfight", "Auflistung deiner Teamfights.") {
+
+    init {
+        requirements += notSuspiciousRequirement
+    }
 
     override fun handle(sender: AbsSender, user: User, chat: Chat, challenger: Challenger, params: List<String>) {
         val fights = TeamManager.getActiveFights(challenger).groupBy { it.other }
