@@ -7,6 +7,7 @@ import de.fhaachen.matse.movebot.model.ChallengerPermission
 import de.fhaachen.matse.movebot.telegram.ChallengeBot
 import de.fhaachen.matse.movebot.telegram.model.ChallengerCommand
 import de.fhaachen.matse.movebot.telegram.model.Parameter
+import de.fhaachen.matse.movebot.telegram.model.inlineKeyboardFromPair
 import org.telegram.telegrambots.meta.api.objects.Chat
 import org.telegram.telegrambots.meta.api.objects.User
 import org.telegram.telegrambots.meta.bots.AbsSender
@@ -25,7 +26,7 @@ object FeedbackCommand : ChallengerCommand("feedback", "Schreibe mir deine Anreg
 
         ChallengerManager.challengers.filter { it.hasPermission(ChallengerPermission.ADMIN) }.forEach {
             try {
-                ChallengeBot.sendMessage(it.telegramUser.id, message)
+                ChallengeBot.sendMessage(it.telegramUser.id, message, inlineKeyboardFromPair("Teilnehmer ansehen" to "${UserStatusCommand.command} ${challenger.telegramUser.id}", "Antworten" to "${MsgCommand.command} ${challenger.telegramUser.id}"))
             } catch (e: Exception) {
             }
 
