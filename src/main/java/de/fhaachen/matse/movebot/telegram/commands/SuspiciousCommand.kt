@@ -36,13 +36,14 @@ object SuspiciousCommand : ChallengerCommand("suspicious", "Suspicious Status ei
 
         if (suspect.suspicious) {
             suspect.suspicious = false
-            ChallengeBot.sendMessage(suspect.telegramUser.id, "Du wirst nun nicht mehr verdächtigt. Du kannst den Bot wieder normal benutzen.")
             sendComplete(chat, "Der Teilnehmer ${suspect.nickname.escapeMarkdown()} wird nun *nicht mehr verdächtigt*!")
+            ChallengeBot.sendMessage(suspect.telegramUser.id, "Du wirst nun nicht mehr verdächtigt. Du kannst den Bot wieder normal benutzen.")
         }else {
             suspect.suspicious = true
+            sendComplete(chat, "Der Teilnehmer ${suspect.nickname.escapeMarkdown()} ist nun *verdächtigt*!\nEr darf keine weiteren Aktivitäten eintragen und wurde vorerst aus den Statistiken entfernt.")
             ChallengeBot.sendMessage(suspect.telegramUser.id, "Du wirst verdächtigt falsche Angaben zu tätigen. Dies nimmt den anderen Teilnehmern der Challenge den Spaß. Deshalb wurdest du bis auf Weiteres von der Benutzung dieses Bots ausgeschlossen.\n\n" +
                     "Du glaubst es handelt sich um einen Fehler? Dann trete mit uns in Kontakt, damit wir den Irrtum klären können.", inlineKeyboardFromPair("Feedback geben" to FeedbackCommand.command))
-            sendComplete(chat, "Der Teilnehmer ${suspect.nickname.escapeMarkdown()} ist nun *verdächtigt*!\nEr darf keine weiteren Aktivitäten eintragen und wurde vorerst aus den Statistiken entfernt.")
+
         }
     }
 }
