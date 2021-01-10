@@ -30,7 +30,7 @@ object StatisticsManager {
     }
 
     fun getCompetitorStatistic(timeInterval: TimeInterval = TimeInterval.WEEKLY) = StatisticBuilder()
-            .addChallenger(ChallengerManager.challengers)
+            .addChallenger(ChallengerManager.challengers.filterNot { it.suspicious })
             .groupByTimeInterval(timeInterval)
             .cumulateData()
             .build("Competitors (${timeInterval.name})")

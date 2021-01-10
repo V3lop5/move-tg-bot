@@ -16,6 +16,7 @@ import org.telegram.telegrambots.extensions.bots.commandbot.TelegramLongPollingC
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery
 import org.telegram.telegrambots.meta.api.methods.GetFile
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto
 import org.telegram.telegrambots.meta.api.methods.send.SendVideo
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText
 import org.telegram.telegrambots.meta.api.objects.Message
@@ -249,6 +250,11 @@ object ChallengeBot : TelegramLongPollingCommandBot(botName) {
 
     fun sendMessage(userId: Int, text: String, keyboard: ReplyKeyboard? = null) =
         sendMessage(userId.toLong(), text, keyboard)
+
+    fun sendPhoto(chatId: Long, photo: File, caption: String): Message? {
+        val msg = SendPhoto().setChatId(chatId).setPhoto(photo).setCaption(caption).setParseMode("markdown")
+        return execute(msg)
+    }
 
     fun shutdownBot() {
         MessageHandler.cleanupAllMessages()
