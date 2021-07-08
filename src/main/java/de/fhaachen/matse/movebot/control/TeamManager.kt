@@ -94,18 +94,14 @@ object TeamManager {
         if (isInTeam(team, challenger))
             return false
 
-        // TODO Team-Challenges überprüfen. Das neue Mitglied dürfte nicht in zwei konkurrierenden Teams sein.
-
-        // Das könnte dann wieder raus.
-        if (teams.any { t -> t.members.any { it.challengerId == challenger.telegramUser.id } })
+        if (getActiveFights(team).flatMap { it.other.members }.any { it.challengerId == challenger.telegramUser.id })
             return false
 
         return true
     }
 
     fun canFight(teamA: Team, teamB: Team): Boolean {
-        // TODO Vorbereitung, falls irgendwann einmal Mitglieder in mehreren Teams sind
-        return true
+        return teamA.members.none { it in teamB.members }
     }
 
     fun save() {

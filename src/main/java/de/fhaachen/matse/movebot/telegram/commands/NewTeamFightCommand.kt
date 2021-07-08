@@ -24,10 +24,10 @@ object NewTeamFightCommand : ChallengerCommand("newteamfight", "Trete in einem K
         val movementType = MovementType.of(params[0])
         val teamname = params[1]
 
-        val own = TeamManager.teams.find { it.members.any { it.challengerId == challenger.telegramUser.id } }
+        val own = TeamManager.teams.singleOrNull { it.members.any { it.challengerId == challenger.telegramUser.id } }
 
         if (own == null) {
-            sendComplete(chat, "Du bist in keinem Team. Du kannst deshalb kein Wettkampf starten. Erstelle zuerst ein Team (/${NewTeamCommand.command}) oder trete einem Team bei (/${JoinTeamCommand.command}).")
+            sendComplete(chat, "Du bist in keinem oder mehreren Teams. Du kannst deshalb kein Wettkampf starten. Erstelle zuerst ein Team (/${NewTeamCommand.command}) oder trete einem Team bei (/${JoinTeamCommand.command}).")
             return
         }
 

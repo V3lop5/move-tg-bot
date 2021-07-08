@@ -25,10 +25,10 @@ object NewTeamCommand : ChallengerCommand("newteam", "Erstelle ein neues Team.")
             return
         }
 
-        if (TeamManager.getTeams(challenger).isNotEmpty()) {
+        /* if (TeamManager.getTeams(challenger).isNotEmpty()) {
             sendComplete(chat, "Du bist bereits in einem Team. Du kannst kein Neues erstellen.")
             return
-        }
+        } */
 
         val team = TeamManager.createTeam(teamname, challenger)
         sendComplete(chat, "Du hast erfolgreich das Team _${team.name}_ (ID ${team.teamId}) erstellt.\n\n" +

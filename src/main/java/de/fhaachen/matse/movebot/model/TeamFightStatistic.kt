@@ -11,6 +11,9 @@ data class TeamFightStatistic(
     val ownValue = own.members.map { it.getSum(movementType, startTime) }.sum().toInt()
     val otherValue = other.members.map { it.getSum(movementType, startTime) }.sum().toInt()
 
+    val ownPoints = ownValue * movementType.pointsPerUnit
+    val otherPoints = otherValue * movementType.pointsPerUnit
+
     val isLeading = ownValue > otherValue
     val isEqual = ownValue == otherValue
 }
