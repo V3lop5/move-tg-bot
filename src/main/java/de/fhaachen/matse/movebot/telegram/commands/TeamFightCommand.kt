@@ -26,8 +26,8 @@ object TeamFightCommand : ChallengerCommand("teamfight", "Auflistung deiner Team
         }
 
         val message = fights.map { (other, fights) ->
-            val maxOwnValue = fights.map { it.ownValue }.max()?:0
-            val maxOtherValue = fights.map { it.otherValue }.max()?:0
+            val maxOwnValue = fights.map { it.ownValue }.maxOrNull()?:0
+            val maxOtherValue = fights.map { it.otherValue }.maxOrNull()?:0
 
             val ownTotalPoints = fights.sumByDouble { it.ownPoints }.round(2)
             val otherTotalPoints = fights.sumByDouble { it.otherPoints }.round(2)

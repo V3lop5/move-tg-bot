@@ -117,7 +117,7 @@ class StatisticBuilder {
                     entries.add(PointStatEntry(data.key, challenger, data.value.sumByDouble { it.points }.round(2)))
                 } else {
                     val intervalData = data.value.groupBy { groupByTime!!.groupBy(it) }
-                    val xData = IntRange(intervalData.minBy { it.key }?.key ?: 0, intervalData.maxBy { it.key }?.key
+                    val xData = IntRange(intervalData.minByOrNull { it.key }?.key ?: 0, intervalData.maxByOrNull { it.key }?.key
                             ?: 0)
                     val yData = xData.map { x ->
                         if (cumulateData) intervalData.filterKeys { it <= x }.values.sumByDouble { movement -> movement.sumByDouble { it.points } }
@@ -129,16 +129,16 @@ class StatisticBuilder {
         }
 
         if (!allowFrayed && groupByTime != null) {
-            val minX = entries.filterIsInstance<SeriesStatEntry>().map { it.xData.min() ?: 0.0 }.min() ?: 0.0
-            val maxX = entries.filterIsInstance<SeriesStatEntry>().map { it.xData.max() ?: 1.0 }.max() ?: 1.0
+            val minX = entries.filterIsInstance<SeriesStatEntry>().map { it.xData.minOrNull() ?: 0.0 }.minOrNull() ?: 0.0
+            val maxX = entries.filterIsInstance<SeriesStatEntry>().map { it.xData.maxOrNull() ?: 1.0 }.maxOrNull() ?: 1.0
 
             entries.filterIsInstance<SeriesStatEntry>().forEach { entry ->
-                if (entry.xData.min() ?: 0.0 > minX) {
+                if (entry.xData.minOrNull() ?: 0.0 > minX) {
                     entry.xData.add(0, minX)
                     entry.yData.add(0, 0.0)
                 }
 
-                if (entry.xData.max() ?: 0.0 < maxX) {
+                if (entry.xData.maxOrNull() ?: 0.0 < maxX) {
                     entry.xData.add(maxX)
                     entry.yData.add(entry.yData.lastOrNull() ?: 0.0)
                 }

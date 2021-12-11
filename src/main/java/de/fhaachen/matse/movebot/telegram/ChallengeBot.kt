@@ -15,6 +15,7 @@ import de.fhaachen.matse.movebot.telegram.model.inlineKeyboardFromPair
 import org.telegram.telegrambots.extensions.bots.commandbot.TelegramLongPollingCommandBot
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery
 import org.telegram.telegrambots.meta.api.methods.GetFile
+import org.telegram.telegrambots.meta.api.methods.send.SendDocument
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto
 import org.telegram.telegrambots.meta.api.methods.send.SendVideo
@@ -37,6 +38,7 @@ object ChallengeBot : TelegramLongPollingCommandBot(botName) {
         register(CompetitorCommand)
         register(ChallengeCommand)
         register(DiagramCommand)
+        register(ExportCSVCommand)
         register(FeedbackCommand)
         register(GoalCommand)
         register(HelpCommand)
@@ -253,6 +255,11 @@ object ChallengeBot : TelegramLongPollingCommandBot(botName) {
 
     fun sendPhoto(chatId: Long, photo: File, caption: String): Message? {
         val msg = SendPhoto().setChatId(chatId).setPhoto(photo).setCaption(caption).setParseMode("markdown")
+        return execute(msg)
+    }
+
+    fun sendDocument(chatId: Long, file: File, caption: String): Message? {
+        val msg = SendDocument().setChatId(chatId).setDocument(file).setCaption(caption).setParseMode("markdown")
         return execute(msg)
     }
 

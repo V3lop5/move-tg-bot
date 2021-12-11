@@ -59,7 +59,7 @@ class SeriesStatEntry(
         private val cumulatedData: Boolean
 ) : StatEntry(label, challenger) {
     override fun value(): Double {
-        return if (cumulatedData) yData.max() ?: 0.0 else yData.sum().round(2)
+        return if (cumulatedData) yData.maxOrNull() ?: 0.0 else yData.sum().round(2)
     }
 
 

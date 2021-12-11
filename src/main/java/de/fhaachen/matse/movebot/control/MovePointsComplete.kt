@@ -32,7 +32,7 @@ object MovePointsComplete : MovementAdd {
                 "Glükwunsch! Du hast die $POINT_GOAL Punkte!\n" +
                 "=============================\n\n" +
                 "In ${challenger.movements.count()} Aktivitäten hast du durchschnittlich ${challenger.movements.map { it.points }.average().round(2)} Punkte erzielt." +
-                "Zwischen der ersten und der neusten Aktivität lagen ${Duration.between(challenger.movements.map { it.datetime }.min(), challenger.movements.map { it.datetime }.max()).toDays()} Tage.\n\n" +
+                "Zwischen der ersten und der neusten Aktivität lagen ${Duration.between(challenger.movements.map { it.datetime }.minOrNull(), challenger.movements.map { it.datetime }.maxOrNull()).toDays()} Tage.\n\n" +
                 "Danke für deine Teilnahme! Bist du auch bei der nächsten Challenge dabei?")
 
         val message = "*${challenger.nickname.escapeMarkdown()}* hat $POINT_GOAL Punkte erreicht!"

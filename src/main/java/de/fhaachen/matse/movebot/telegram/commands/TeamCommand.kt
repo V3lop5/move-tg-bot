@@ -38,8 +38,8 @@ object TeamCommand : ChallengerCommand("team", "Zeigt die Übersicht für ein Te
         }.joinToString("\n- ", prefix = "Mitglieder:\n- ", postfix = "\n\n")
 
         message += fights.map { (other, fights) ->
-            val maxOwnValue = fights.map { it.ownValue }.max()?:0
-            val maxOtherValue = fights.map { it.ownValue }.max()?:0
+            val maxOwnValue = fights.map { it.ownValue }.maxOrNull()?:0
+            val maxOtherValue = fights.map { it.ownValue }.maxOrNull()?:0
             fights.first().own.name + " \uD83C\uDD9A " + other.name + "\n" +
                     fights.joinToString("\n") {
                         "${when {
