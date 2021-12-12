@@ -34,6 +34,7 @@ object ChallengeBot : TelegramLongPollingCommandBot(botName) {
         register(AddTrainingCommand)
         register(BotStatusCommand)
         register(BroadcastCommand)
+        register(BroadcastVideoCommand)
         register(CancelCommand)
         register(CompetitorCommand)
         register(ChallengeCommand)
