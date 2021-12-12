@@ -24,7 +24,7 @@ object ExportCSVCommand : ChallengerCommand("exportcsv", "Exportiert die Daten a
 
 
         csvWriter().open("export.csv") {
-            ChallengerManager.challengers.flatMap { challenger ->
+            ChallengerManager.challengers.filter { !it.suspicious }.flatMap { challenger ->
                 challenger.movements.map { movement ->
                     writeRow(
                         challenger.nickname,
