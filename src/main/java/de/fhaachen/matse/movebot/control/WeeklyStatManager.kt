@@ -87,7 +87,8 @@ object WeeklyStatManager {
                             "Herzlichen Glückwunsch zu *Platz $place*!"
                         else
                             "Nächste Woche wird es besser! :P"
-                    } else "Du scheinst dich nicht zu bewegen. Lebst du noch? (PS: Hier folgen demnächst noch weitere tolle Motivationssprüche)"
+                    } else "Dein Körper kann alles! Es ist nur dein Gehirn, das du überzeugen musst. " +
+                            "Sammel doch nächste Woche ein paar Punkte!"
 
             try {
                 ChallengeBot.sendPhoto(challenger.telegramUser.id.toLong(), chart, messageOverview)
