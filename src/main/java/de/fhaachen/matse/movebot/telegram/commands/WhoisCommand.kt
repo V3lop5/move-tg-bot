@@ -17,6 +17,7 @@ object WhoisCommand : ChallengerCommand("whois", "Videos und Ziele anderer Teiln
         onlyUserChat()
         requirements += allowPersonalShareRequirement
         requirements += notSuspiciousRequirement
+        requirements += anyActivityRequirement
 
         parameters += Parameter("Teilnehmer", "Von welchem Teilnehmer möchtest du die Ziele und das Präsentationsvideo einsehen?\nGebe den Namen des Teilnehmers ein.", singleWord = false)
     }

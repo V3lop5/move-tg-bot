@@ -20,6 +20,7 @@ object LeaderboardCommand : ChallengerCommand("leaderboard", "Rangliste je Sport
 
     init {
         requirements += notSuspiciousRequirement
+        requirements += anyActivityRequirement
 
         onlyUserChat()
         parameters.add(movementTypeParameter)
@@ -28,11 +29,13 @@ object LeaderboardCommand : ChallengerCommand("leaderboard", "Rangliste je Sport
     override fun handle(sender: AbsSender, user: User, chat: Chat, challenger: Challenger, params: List<String>) {
         val movementType = MovementType.of(params[0])
         val results = ChallengerManager.challengers
+            .asSequence()
             .filterNot { it.suspicious }
             .map { Pair(StatisticsManager.getSum(it, movementType), it.nickname) }
             .filter { it.first > 0 }
             .sortedByDescending { it.first }
             .mapIndexed { index, (value, nickname) -> "`${(index + 1).padStart(2)}. ${value.round(1).padStart(6)} ${movementType.unit}` ${nickname.escapeMarkdown()}" }
+            .toList()
 
         if(results.isEmpty()) {
             sendComplete(chat, "Bisher wurden keine Aktivitäten in der Sportart ${movementType.title} ${movementType.emoji} erfasst.\nWenn du jetzt anfängst, sicherst du dir womöglich Platz 1!")

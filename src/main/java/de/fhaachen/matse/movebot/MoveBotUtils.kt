@@ -1,6 +1,6 @@
 package de.fhaachen.matse.movebot
 
-const val POINT_GOAL = 2021
+const val POINT_GOAL = 2022
 
 fun toFinish(value: Int) = POINT_GOAL.toDouble() / value
 
