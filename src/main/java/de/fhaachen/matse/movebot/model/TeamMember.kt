@@ -5,7 +5,7 @@ import de.fhaachen.matse.movebot.control.StatisticsManager
 import java.time.LocalDateTime
 
 data class TeamMember(
-    val challengerId: Int,
+    val challengerId: Long,
     val jointime: LocalDateTime
 ) {
 

@@ -9,10 +9,10 @@ object KeyboardRequestHandler {
     private val openRequests = mutableListOf<KeyboardRequest>()
 
     fun addRequest(
-        chatIds: List<Int>,
+        chatIds: List<Long>,
         answers: List<String>,
-        sendMessage: (chatId: Int, keyboard: InlineKeyboardMarkup) -> Message,
-        action: (user: Int, answer: String) -> Unit
+        sendMessage: (chatId: Long, keyboard: InlineKeyboardMarkup) -> Message,
+        action: (user: Long, answer: String) -> Unit
     ) {
         val id = generateId()
         val keyboard = inlineKeyboardFromPair(answers.mapIndexed { index, answer -> answer to "#kbreq $id $index" })
@@ -30,7 +30,7 @@ object KeyboardRequestHandler {
         return openRequests.lastOrNull()?.id ?: 1
     }
 
-    fun onAnswer(chatId: Int, id: Int, answerId: Int) {
+    fun onAnswer(chatId: Long, id: Int, answerId: Int) {
         val request = openRequests.find { it.id == id }
 
         if (request == null) {
@@ -55,6 +55,6 @@ object KeyboardRequestHandler {
         val id: Int,
         val messages: List<Pair<Long, Int>>,
         val answers: List<String>,
-        val action: (userId: Int, answer: String) -> Unit
+        val action: (userId: Long, answer: String) -> Unit
     )
 }

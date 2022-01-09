@@ -27,7 +27,7 @@ object MessageHandler {
 
     fun deleteMessage(chatId: Long, messageId: Int) {
         try {
-            ChallengeBot.execute(DeleteMessage(chatId, messageId))
+            ChallengeBot.execute(DeleteMessage(chatId.toString(), messageId))
         } catch (e: Exception) {
             System.err.println("Löschen der Nachricht ${messageId} in ${chatId} nicht möglich... Überspringe...")
         }

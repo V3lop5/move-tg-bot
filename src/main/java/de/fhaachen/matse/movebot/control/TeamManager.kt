@@ -52,9 +52,8 @@ object TeamManager {
                     "${challenger.nickname.escapeMarkdown()} möchte dem Team _${team.name.escapeMarkdown()}_ beitreten.\nNimmst du die Anfrage an?",
                     keyboard
                 )
-            },
-            { user, answer -> onJoinRequestAnswer(challenger, team, answer == "Annehmen", user) }
-        )
+            }
+        ) { user, answer -> onJoinRequestAnswer(challenger, team, answer == "Annehmen", user) }
 
         ChallengeBot.sendMessage(
             challenger.telegramUser.id,
@@ -62,7 +61,7 @@ object TeamManager {
         )
     }
 
-    fun onJoinRequestAnswer(challenger: Challenger, team: Team, accepted: Boolean, answeredBy: Int) {
+    fun onJoinRequestAnswer(challenger: Challenger, team: Team, accepted: Boolean, answeredBy: Long) {
         if (!accepted) {
             ChallengeBot.sendMessage(
                 challenger.telegramUser.id,
@@ -123,12 +122,11 @@ object TeamManager {
                     "Das Team _${own.name.escapeMarkdown()}_ fordert dein Team _${other.name.escapeMarkdown()}_ zum Wettkampf in der Sportart ${movementType.title} heraus. Nimmst du die Herausforderung an?",
                     keyboard
                 )
-            },
-            { user, answer -> onFightRequestAnswer(own, other, movementType, answer == "Annehmen", user) }
-        )
+            }
+        ) { user, answer -> onFightRequestAnswer(own, other, movementType, answer == "Annehmen", user) }
     }
 
-    fun onFightRequestAnswer(own: Team, other: Team, movementType: MovementType, accepted: Boolean, answeredBy: Int) {
+    fun onFightRequestAnswer(own: Team, other: Team, movementType: MovementType, accepted: Boolean, answeredBy: Long) {
         if (!accepted) {
             own.members.forEach { ChallengeBot.sendMessage(it.challengerId, "Upps! Das Team _${other.name.escapeMarkdown()}_ hat die Anfrage abgelehnt.") }
             return

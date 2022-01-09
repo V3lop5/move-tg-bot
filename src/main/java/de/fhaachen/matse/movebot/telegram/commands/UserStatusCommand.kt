@@ -35,7 +35,7 @@ object UserStatusCommand : ChallengerCommand("userstatus", "Status eines Users a
 
         val message = "Infos über *${suspect.nickname.escapeMarkdown()}*\n\n" +
                 "*Telegram:*\n" +
-                " > ID: ${suspect.telegramUser.id} ${if (suspect.telegramUser.bot) " (Bot)" else ""}\n" +
+                " > ID: ${suspect.telegramUser.id} ${if (suspect.telegramUser.isBot) " (Bot)" else ""}\n" +
                 " > Sprache: ${suspect.telegramUser.languageCode}\n" +
                 " > Vorname: ${suspect.telegramUser.firstName.escapeMarkdown().ifBlank { "_nicht gesetzt_" }}\n" +
                 " > Nachname: ${suspect.telegramUser.lastName.escapeMarkdown().ifBlank { "_nicht gesetzt_" }}\n" +

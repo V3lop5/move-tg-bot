@@ -1,17 +1,16 @@
 package de.fhaachen.matse.movebot.telegram
 
-import de.fhaachen.matse.movebot.botName
 import de.fhaachen.matse.movebot.control.ChallengerManager
 import de.fhaachen.matse.movebot.control.LiveLocationManager
 import de.fhaachen.matse.movebot.escapeMarkdown
 import de.fhaachen.matse.movebot.handler.ChallengerHandler
 import de.fhaachen.matse.movebot.model.ChallengerPermission
-import de.fhaachen.matse.movebot.telegram.ChallengeBot.registerDefaultAction
 import de.fhaachen.matse.movebot.telegram.commands.*
 import de.fhaachen.matse.movebot.telegram.model.Command
 import de.fhaachen.matse.movebot.telegram.model.MessageCleanupCause
 import de.fhaachen.matse.movebot.telegram.model.MessageType
 import de.fhaachen.matse.movebot.telegram.model.inlineKeyboardFromPair
+import org.telegram.telegrambots.bots.DefaultBotOptions
 import org.telegram.telegrambots.extensions.bots.commandbot.TelegramLongPollingCommandBot
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery
 import org.telegram.telegrambots.meta.api.methods.GetFile
@@ -20,6 +19,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto
 import org.telegram.telegrambots.meta.api.methods.send.SendVideo
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText
+import org.telegram.telegrambots.meta.api.objects.InputFile
 import org.telegram.telegrambots.meta.api.objects.Message
 import org.telegram.telegrambots.meta.api.objects.Update
 import org.telegram.telegrambots.meta.api.objects.User
@@ -27,7 +27,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard
 import java.io.File
 
-object ChallengeBot : TelegramLongPollingCommandBot(botName) {
+object ChallengeBot : TelegramLongPollingCommandBot(DefaultBotOptions()) {
 
     init {
         register(AddMovementCommand)
@@ -99,7 +99,12 @@ object ChallengeBot : TelegramLongPollingCommandBot(botName) {
                     inlineKeyboardFromPair("Ja" to "#myvideo", "Nein" to CancelCommand.command)
                 )
                     .also { MessageHandler.addDeleteableMessage(it, MessageType.COMMAND_PROCESS) }
-                downloadFile(execute(GetFile().setFileId(update.message.video.fileId))).copyTo(File("videos/${update.message.video.fileId}.mp4"))
+
+                val fileGetter = GetFile()
+                fileGetter.fileId = update.message.video.fileId
+
+                val downloadedFile = downloadFile(execute(fileGetter))
+                downloadedFile.copyTo(File("videos/${update.message.video.fileId}.mp4"))
             } else
                 println("[processNonCommandUpdate Other] ${update.message.from.getName()} (${update.message.from.id}) message='${update.message}'")
         } else if (update.hasEditedMessage()) {
@@ -183,40 +188,39 @@ object ChallengeBot : TelegramLongPollingCommandBot(botName) {
                                 .map { it.telegramUser.id },
                             listOf("Annehmen", "Ablehnen"),
                             { chatId, keyboard ->
-                                ChallengeBot.execute(
-                                    SendVideo()
-                                        .setVideo(presentationVideoId)
-                                        .setChatId(chatId.toLong())
-                                        .setCaption("Darf dieses Video von ${nickname.escapeMarkdown()} mit allen geteilt werden?")
-                                        .setParseMode("markdown")
-                                        .setReplyMarkup(keyboard)
-                                )
-                            },
-                            { _, answer ->
-                                if (answer == "Annehmen") {
-                                    isVideoAccepted = true
-                                    sendMessage(
-                                        telegramUser.id,
-                                        "Dein Video wurde akzeptiert. Du kannst dir jetzt die Vorstellungsvideos der anderen Teilnehmer ansehen.",
-                                        inlineKeyboardFromPair("Vorstellungen anstehen" to WhoisCommand.command)
-                                    )
-                                    ChallengerManager.challengers.filter { it.telegramUser.id != telegramUser.id }
-                                        .forEach {
-                                            sendMessage(
-                                                it.telegramUser.id,
-                                                "${nickname.escapeMarkdown()} hat ein Vorstellungsvideo hochgeladen.\n" +
-                                                        if (!it.shareVideoAndGoals) "Damit du dir das Video ansehen kannst, musst du selbst ein Video aufnehmen und an diesen Bot schicken." else "",
-                                                inlineKeyboardFromPair("Jetzt ansehen" to WhoisCommand.command + " " + nickname)
-                                            )
-                                        }
-                                } else {
-                                    sendMessage(
-                                        telegramUser.id,
-                                        "Dein Video wurde leider abgelehnt. Bitte lade ein neues Video hoch."
-                                    )
-                                }
+                                val request = SendVideo()
+                                request.video = InputFile(presentationVideoId)
+                                request.chatId = chatId.toString()
+                                request.caption =
+                                    "Darf dieses Video von ${nickname.escapeMarkdown()} mit allen geteilt werden?"
+                                request.parseMode = "markdown"
+                                request.replyMarkup = keyboard
+                                return@addRequest ChallengeBot.execute(request)
                             }
-                        )
+                        ) { _, answer ->
+                            if (answer == "Annehmen") {
+                                isVideoAccepted = true
+                                sendMessage(
+                                    telegramUser.id,
+                                    "Dein Video wurde akzeptiert. Du kannst dir jetzt die Vorstellungsvideos der anderen Teilnehmer ansehen.",
+                                    inlineKeyboardFromPair("Vorstellungen anstehen" to WhoisCommand.command)
+                                )
+                                ChallengerManager.challengers.filter { it.telegramUser.id != telegramUser.id }
+                                    .forEach {
+                                        sendMessage(
+                                            it.telegramUser.id,
+                                            "${nickname.escapeMarkdown()} hat ein Vorstellungsvideo hochgeladen.\n" +
+                                                    if (!it.shareVideoAndGoals) "Damit du dir das Video ansehen kannst, musst du selbst ein Video aufnehmen und an diesen Bot schicken." else "",
+                                            inlineKeyboardFromPair("Jetzt ansehen" to WhoisCommand.command + " " + nickname)
+                                        )
+                                    }
+                            } else {
+                                sendMessage(
+                                    telegramUser.id,
+                                    "Dein Video wurde leider abgelehnt. Bitte lade ein neues Video hoch."
+                                )
+                            }
+                        }
                     }
                 }
                 return
@@ -233,34 +237,42 @@ object ChallengeBot : TelegramLongPollingCommandBot(botName) {
                 dataSplit.drop(1).toTypedArray()
             )
                 .apply {
-                    execute(
-                        AnswerCallbackQuery().setCallbackQueryId(update.callbackQuery.id)
-                            .setText("Die Anfrage wurde verarbeitet.")
-                    )
+                    val request = AnswerCallbackQuery()
+                    request.callbackQueryId = update.callbackQuery.id
+                    request.text = "Die Anfrage wurde verarbeitet."
+                    execute(request)
                 }
                 ?: println("Command '${dataSplit[0]}' für CallbackQuery '${update.callbackQuery.data}' nicht gefunden.")
         }
     }
 
     override fun getBotToken() = de.fhaachen.matse.movebot.botToken
+    override fun getBotUsername() = de.fhaachen.matse.movebot.botName
 
     fun sendMessage(chatId: Long, text: String, keyboard: ReplyKeyboard? = null): Message {
-        val msg = SendMessage(chatId, text).setParseMode("markdown")
+        val msg = SendMessage(chatId.toString(), text)
+        msg.parseMode = "markdown"
         if (keyboard != null) msg.replyMarkup = keyboard
 
         return execute(msg)
     }
 
-    fun sendMessage(userId: Int, text: String, keyboard: ReplyKeyboard? = null) =
-        sendMessage(userId.toLong(), text, keyboard)
 
     fun sendPhoto(chatId: Long, photo: File, caption: String): Message? {
-        val msg = SendPhoto().setChatId(chatId).setPhoto(photo).setCaption(caption).setParseMode("markdown")
+        val msg = SendPhoto()
+        msg.chatId = chatId.toString()
+        msg.photo = InputFile(photo)
+        msg.caption = caption
+        msg.parseMode = "markdown"
         return execute(msg)
     }
 
     fun sendDocument(chatId: Long, file: File, caption: String): Message? {
-        val msg = SendDocument().setChatId(chatId).setDocument(file).setCaption(caption).setParseMode("markdown")
+        val msg = SendDocument()
+        msg.chatId = chatId.toString()
+        msg.document = InputFile(file)
+        msg.caption = caption
+        msg.parseMode = "markdown"
         return execute(msg)
     }
 
@@ -271,9 +283,11 @@ object ChallengeBot : TelegramLongPollingCommandBot(botName) {
     }
 
     fun sendEditText(message: Message, text: String, keyboard: InlineKeyboardMarkup? = null) {
-        val editMsg =
-            EditMessageText().setChatId(message.chatId).setMessageId(message.messageId).setParseMode("markdown")
-                .setText(text)
+        val editMsg = EditMessageText()
+        editMsg.chatId = message.chatId.toString()
+        editMsg.messageId = message.messageId
+        editMsg.parseMode = "markdown"
+        editMsg.text = text
         if (keyboard != null) editMsg.replyMarkup = keyboard
         execute(editMsg)
     }

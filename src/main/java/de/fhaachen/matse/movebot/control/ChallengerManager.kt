@@ -32,7 +32,7 @@ object ChallengerManager {
 
     fun findChallenger(telegramUser: User) = findChallenger(telegramUser.id)
 
-    fun findChallenger(id: Int) = challengers.firstOrNull { it.telegramUser.id == id }
+    fun findChallenger(id: Long) = challengers.firstOrNull { it.telegramUser.id == id }
 
     fun findChallenger(name: String) = challengers.firstOrNull {
         name.equals(it.customNickname, true) ||

@@ -4,9 +4,11 @@ import de.fhaachen.matse.movebot.console.ConsoleEventListener
 import de.fhaachen.matse.movebot.console.DataChangeEventListener
 import de.fhaachen.matse.movebot.control.*
 import de.fhaachen.matse.movebot.telegram.ChallengeBot
-import org.telegram.telegrambots.ApiContextInitializer
+import org.telegram.telegrambots.bots.TelegramLongPollingBot
 import org.telegram.telegrambots.meta.TelegramBotsApi
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException
+import org.telegram.telegrambots.meta.generics.BotSession
+import org.telegram.telegrambots.updatesreceivers.DefaultBotSession
 import java.io.File
 import java.time.LocalDateTime
 import kotlin.concurrent.fixedRateTimer
@@ -28,9 +30,7 @@ fun main() {
     MovePointsComplete.register()
     GoalComplete.register()
 
-    ApiContextInitializer.init()
-
-    val botsApi = TelegramBotsApi()
+    val botsApi = TelegramBotsApi(DefaultBotSession::class.java)
 
     try {
         botsApi.registerBot(ChallengeBot)

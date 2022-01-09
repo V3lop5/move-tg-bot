@@ -22,13 +22,13 @@ class LiveLocation(val infoMessage: Message) {
         return calcDistance(from.latitude, from.longitude, to.latitude, to.longitude).round(3)
     }
 
-    private fun calcDistance(latA: Float, longA: Float, latB: Float, longB: Float): Double {
+    private fun calcDistance(latA: Double, longA: Double, latB: Double, longB: Double): Double {
         val theDistance =
-                sin(Math.toRadians(latA.toDouble())) *
-                        sin(Math.toRadians(latB.toDouble())) +
-                        cos(Math.toRadians(latA.toDouble())) *
-                        cos(Math.toRadians(latB.toDouble())) *
-                        cos(Math.toRadians(longA - longB.toDouble()))
+                sin(Math.toRadians(latA)) *
+                        sin(Math.toRadians(latB)) +
+                        cos(Math.toRadians(latA)) *
+                        cos(Math.toRadians(latB)) *
+                        cos(Math.toRadians(longA - longB))
 
         return (Math.toDegrees(acos(theDistance))) * 69.09 * 1.6093
     }

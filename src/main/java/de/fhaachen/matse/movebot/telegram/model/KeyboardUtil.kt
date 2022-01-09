@@ -6,13 +6,21 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow
 
-fun inlineKeyboard(buttons: List<InlineKeyboardButton>, maxColumns: Int = 2): InlineKeyboardMarkup = InlineKeyboardMarkup().setKeyboard(getButtonsOrderd(buttons, maxColumns))
+fun inlineKeyboard(buttons: List<InlineKeyboardButton>, maxColumns: Int = 2): InlineKeyboardMarkup {
+    val inlineKeyboard = InlineKeyboardMarkup()
+    inlineKeyboard.keyboard = getButtonsOrderd(buttons, maxColumns)
+    return inlineKeyboard
+}
 
 fun inlineKeyboard(vararg buttons: InlineKeyboardButton, maxColumns: Int = 2) = inlineKeyboard(buttons.toList(), maxColumns)
 
 fun inlineKeyboardFromPair(vararg pairs: Pair<String, String>, maxColumns: Int = 2) = inlineKeyboardFromPair(pairs.toList(), maxColumns)
 
-fun inlineKeyboardFromPair(pairs: List<Pair<String, String>>, maxColumns: Int = 2) = inlineKeyboard(pairs.map { InlineKeyboardButton(it.first).setCallbackData(it.second) }, maxColumns)
+fun inlineKeyboardFromPair(pairs: List<Pair<String, String>>, maxColumns: Int = 2) = inlineKeyboard(pairs.map {
+    val button = InlineKeyboardButton(it.first)
+    button.callbackData = it.second
+    return@map button
+}, maxColumns)
 
 
 fun getButtonsOrderd(btns: List<InlineKeyboardButton>, maxColumns: Int = 2): List<List<InlineKeyboardButton>> {
@@ -33,10 +41,14 @@ fun getButtonsOrderd(btns: List<InlineKeyboardButton>, maxColumns: Int = 2): Lis
 }
 
 fun isEnoughSpace(list: List<InlineKeyboardButton>, btn: InlineKeyboardButton): Boolean {
-    return list.sumBy { it.text.length + 10 } + btn.text.length + 10 < 50
+    return list.sumOf { it.text.length + 10 } + btn.text.length + 10 < 50
 }
 
-fun replyKeyboard(buttons: List<KeyboardButton>, maxColumns: Int = 2): ReplyKeyboardMarkup = ReplyKeyboardMarkup().setKeyboard(getReplyButtonsOrderd(buttons, maxColumns))
+fun replyKeyboard(buttons: List<KeyboardButton>, maxColumns: Int = 2): ReplyKeyboardMarkup {
+    val replyKeyboard = ReplyKeyboardMarkup()
+    replyKeyboard.keyboard = getReplyButtonsOrderd(buttons, maxColumns)
+    return replyKeyboard
+}
 
 fun replyKeyboard(vararg buttons: KeyboardButton, maxColumns: Int = 2) = replyKeyboard(buttons.toList(), maxColumns)
 
@@ -63,5 +75,5 @@ fun getReplyButtonsOrderd(btns: List<KeyboardButton>, maxColumns: Int = 2): List
 }
 
 fun isEnoughSpace(list: List<KeyboardButton>, btn: KeyboardButton): Boolean {
-    return list.sumBy { it.text.length + 10 } + btn.text.length + 10 < 50
+    return list.sumOf { it.text.length + 10 } + btn.text.length + 10 < 50
 }
