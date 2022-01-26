@@ -18,7 +18,7 @@ val movementValueParameter = object : Parameter("Distanz", "Gebe die Distanz in 
         return if (movementType == null) "Aktivitäten werden entweder in Kilometer, Minuten oder Wiederholungen gemessen.\n" +
                 "Bitte gebe die Distanz in Kilometern, die Aktivitätsdauer in Minuten oder die Anzahl der Wiederholungen ein.\n" +
                 "Falls nötig kannst du auch mit Kommazahlen arbeiten. Beispiel: `1.2` [km] entsprechen 1200 Metern"
-        else "Bitte gebe für die Aktivität *${movementType.name}* die _${unitDescriptions[movementType.unit]}_ an.\n\nBeispiel: ${unitExamples[movementType.unit]} ${movementType.title}"
+        else "Bitte gebe für die Aktivität *${movementType.title}* die _${unitDescriptions[movementType.unit]}_ an.\n\nBeispiel: ${unitExamples[movementType.unit]} ${movementType.title}"
     }
 }
 

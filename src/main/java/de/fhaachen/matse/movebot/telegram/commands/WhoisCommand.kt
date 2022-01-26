@@ -38,7 +38,7 @@ object WhoisCommand : ChallengerCommand("whois", "Videos und Ziele anderer Teiln
 
         val message = "*${who.nickname.escapeMarkdown()}* hat ${who.goals.size} Ziele:\n" +
                 who.goals.map { (type, goal) ->
-            StatisticsManager.getSum(who, type).let { "${type.name} $it ${type.unit} / *$goal ${type.unit}* (${(minOf(it/goal,1.0) * 100).toInt()} %)" }
+            StatisticsManager.getSum(who, type).let { "${type.name.escapeMarkdown()} $it ${type.unit} / *$goal ${type.unit}* (${(minOf(it/goal,1.0) * 100).toInt()} %)" }
         }.joinToString(prefix = "- ", separator = "\n- ")
 
         try {

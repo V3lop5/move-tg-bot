@@ -25,7 +25,7 @@ object GoalCommand :
         if (!challenger.canChangeGoal(movementType)) {
             sendComplete(
                 chat,
-                "Sorry, du kannst dein Ziel für die Sportart ${movementType.name} nicht mehr anpassen. Du hast dir bereits *${challenger.goals[movementType]} ${movementType.unit}* vorgenommen. Zähne zusammenbeißen und durch!"
+                "Sorry, du kannst dein Ziel für die Sportart ${movementType.title} nicht mehr anpassen. Du hast dir bereits *${challenger.goals[movementType]} ${movementType.unit}* vorgenommen. Zähne zusammenbeißen und durch!"
             )
         } else {
             challenger.setGoal(movementType, goal)

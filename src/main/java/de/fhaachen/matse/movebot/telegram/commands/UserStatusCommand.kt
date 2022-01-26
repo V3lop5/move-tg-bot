@@ -53,7 +53,7 @@ object UserStatusCommand : ChallengerCommand("userstatus", "Status eines Users a
                 "Nach Bewegungstyp:\n${MovementType.values().map { Triple(it, StatisticsManager.getSum(suspect, it), StatisticsManager.getPoints(suspect, it)) }.filter { it.second > 0 }
                     .map { (type, sum, points) -> "${type.emoji} `${sum.padStart(4)}` ${type.unit} *${type.name}* ($points Pkt.)" }.joinToString(prefix = "", separator = "\n")}\n\n" +
                 "*Letzte Aktivitäten:*\n${
-                suspect.movements.sortedBy { it.datetime }.takeLast(5).joinToString(prefix = "- ", separator = "\n- ") { "${it.value} ${it.type.unit} ${it.type.name} (${getRelativeTimeSpan(it.datetime)})" }}\n\n" +
+                suspect.movements.sortedBy { it.datetime }.takeLast(5).joinToString(prefix = "- ", separator = "\n- ") { "${it.value} ${it.type.unit} ${it.type.name.escapeMarkdown()} (${getRelativeTimeSpan(it.datetime)})" }}\n\n" +
                 "${suspect.nickname.escapeMarkdown()} erreichte in ${suspect.movements.size} Aktivitäten *${StatisticsManager.getPoints(suspect)}* Punkte!" +
                 if (suspect.suspicious) "\n*Der Benutzer wird der Täuschung verdächtigt und kann den Bot aktuell nur eingeschränkt nutzen!*" else ""
         sendComplete(chat, message, inlineKeyboardFromPair("Nachricht senden" to "${MsgCommand.command} ${suspect.telegramUser.id}", "Suspicious Status ändern" to "${SuspiciousCommand.command} ${suspect.telegramUser.id}"))

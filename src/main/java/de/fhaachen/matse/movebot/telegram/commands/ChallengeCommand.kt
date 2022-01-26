@@ -1,6 +1,7 @@
 package de.fhaachen.matse.movebot.telegram.commands
 
 import de.fhaachen.matse.movebot.control.StatisticsManager
+import de.fhaachen.matse.movebot.escapeMarkdown
 import de.fhaachen.matse.movebot.getRelativeTimeSpan
 import de.fhaachen.matse.movebot.model.Challenger
 import de.fhaachen.matse.movebot.model.MovementType
@@ -19,9 +20,9 @@ object ChallengeCommand : ChallengerCommand("challenge", "Du willst wissen, wie 
                     StatisticsManager.getSum(challenger, type).let { "`${(minOf(it/goal,1.0) * 100).toInt().padStart(3)}` % ${type.emoji}   $it von *$goal ${type.unit}* ${type.title} " } 
                 }.joinToString(prefix = "- ", separator = "\n- ")}\n\n" +
                 "Nach Bewegungstyp:\n${MovementType.values().map { Triple(it, StatisticsManager.getSum(challenger, it), StatisticsManager.getPoints(challenger, it)) }.filter { it.second > 0 }
-                    .map { (type, sum, points) -> "${type.emoji} `${sum.padStart(4)}` ${type.unit} *${type.name}* ($points Pkt.)" }.joinToString(prefix = "", separator = "\n")}\n\n" +
+                    .map { (type, sum, points) -> "${type.emoji} `${sum.padStart(4)}` ${type.unit} *${type.name.escapeMarkdown()}* ($points Pkt.)" }.joinToString(prefix = "", separator = "\n")}\n\n" +
                 "Deine letzten Aktivitäten:\n${
-                challenger.movements.sortedBy { it.datetime }.takeLast(5).joinToString(prefix = "- ", separator = "\n- ") { "${it.value} ${it.type.unit} ${it.type.name} (${getRelativeTimeSpan(it.datetime)})" }}\n\n" +
+                challenger.movements.sortedBy { it.datetime }.takeLast(5).joinToString(prefix = "- ", separator = "\n- ") { "${it.value} ${it.type.unit} ${it.type.name.escapeMarkdown()} (${getRelativeTimeSpan(it.datetime)})" }}\n\n" +
                 "Wo sind die anderen? /${CompetitorCommand.command}"
         sendComplete(chat, message)
     }

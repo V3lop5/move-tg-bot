@@ -1,6 +1,7 @@
 package de.fhaachen.matse.movebot.telegram.commands
 
 import de.fhaachen.matse.movebot.botName
+import de.fhaachen.matse.movebot.escapeMarkdown
 import de.fhaachen.matse.movebot.telegram.ChallengeBot
 import de.fhaachen.matse.movebot.telegram.model.AllowedValuesParameter
 import de.fhaachen.matse.movebot.telegram.model.Command
@@ -41,7 +42,7 @@ object HelpCommand : Command("help", "Was kann der *$botName* überhaupt? Finde 
     private fun helpMessageFromCommand(command: Command): String {
         var commandTemplate = "/${command.command}"
         if (command.parameters.isNotEmpty()) {
-            commandTemplate += " *${command.parameters.joinToString(" ") { "[${if (it is AllowedValuesParameter) it.values.joinToString("|") else it.name}]" }}*"
+            commandTemplate += " *${command.parameters.joinToString(" ") { "[${if (it is AllowedValuesParameter) it.values.joinToString("|") else it.name.escapeMarkdown()}]" }}*"
         }
         return "$commandTemplate\n" +
                 command.description
